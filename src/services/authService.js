@@ -74,7 +74,8 @@ export async function changePassword({ currentPassword, newPassword }) {
 }
 
 export async function requestEmailChange({ email, password }) {
-  return (await apiClient.post("/auth/change-email", { email, password })).data;
+  return (await apiClient.post("/auth/change-email", { email, password: password || undefined }))
+    .data;
 }
 
 export async function cancelEmailChange() {
@@ -85,7 +86,42 @@ export async function confirmEmailChange(token) {
   return (await apiClient.post("/auth/change-email/confirm", { token })).data;
 }
 
+export async function resendEmailChange() {
+  return (await apiClient.post("/auth/change-email/resend")).data;
+}
+
+/** The sign-in providers the API has credentials for, such as `google`. */
+export async function getOAuthProviders() {
+  return (await apiClient.get("/auth/oauth/providers")).data;
+}
+
+/**
+ * Sends the browser to Google or Facebook. The API answers the provider's URL
+ * and keeps the flow in a cookie; the provider later sends the visitor back
+ * through the API to `/oauth/callback`.
+ *
+ * `intent` is `login`, `link` (connect to the signed-in account) or `reauth`
+ * (confirm it is you before a sensitive change).
+ */
+export async function startOAuth(provider, { intent = "login", remember = false, redirect } = {}) {
+  const { data } = await apiClient.post(`/auth/oauth/${encodeURIComponent(provider)}/start`, {
+    intent,
+    remember,
+    redirect,
+  });
+
+  window.location.assign(data.url);
+}
+
+export async function getIdentities() {
+  return (await apiClient.get("/auth/identities")).data;
+}
+
+export async function unlinkIdentity(provider) {
+  return (await apiClient.delete(`/auth/identities/${encodeURIComponent(provider)}`)).data;
+}
+
 export async function deleteAccount({ password }) {
-  await apiClient.delete("/auth/me", { data: { password } });
+  await apiClient.delete("/auth/me", { data: { password: password || undefined } });
   setAccessToken(null);
 }

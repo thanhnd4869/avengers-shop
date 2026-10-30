@@ -68,6 +68,13 @@ function AuthProvider({ children }) {
     );
   }, []);
 
+  // After Google or Facebook the refresh cookie is new, so the session is read
+  // again rather than trusting what was restored when the page loaded.
+  const reloadSession = useCallback(
+    async () => signedIn(await authService.restoreSession()),
+    [signedIn],
+  );
+
   const changePassword = useCallback(
     async (passwords) => signedIn(await authService.changePassword(passwords)),
     [signedIn],
@@ -93,8 +100,19 @@ function AuthProvider({ children }) {
       updateUser,
       changePassword,
       deleteAccount,
+      reloadSession,
     }),
-    [state, notice, login, register, logout, updateUser, changePassword, deleteAccount],
+    [
+      state,
+      notice,
+      login,
+      register,
+      logout,
+      updateUser,
+      changePassword,
+      deleteAccount,
+      reloadSession,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

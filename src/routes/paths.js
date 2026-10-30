@@ -15,6 +15,7 @@ export const PATHS = Object.freeze({
   RESET_PASSWORD: "/reset-password",
   VERIFY_EMAIL: "/verify-email",
   CONFIRM_EMAIL: "/confirm-email",
+  OAUTH_CALLBACK: "/oauth/callback",
   ACCOUNT: "/account",
   ACCOUNT_PROFILE: "/account/profile",
   ACCOUNT_SECURITY: "/account/security",

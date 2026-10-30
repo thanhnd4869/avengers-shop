@@ -221,6 +221,58 @@
   font-size: 0.875rem;
 }
 
+.account-card__hint {
+  margin: 1rem 0 0;
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+}
+
+.connected-accounts {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.connected-accounts__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--sf-bg-sunken);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--bs-border-radius);
+}
+
+.connected-accounts__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: var(--sf-bg-elevated);
+  border: 1px solid var(--sf-border);
+  border-radius: 50%;
+}
+
+.connected-accounts__text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.connected-accounts__name {
+  color: var(--sf-text-strong);
+  font-weight: 600;
+}
+
+/* The provider may report a long address; it is cut to the row. */
+.connected-accounts__status {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .account-card__actions {
   display: flex;
   flex-wrap: wrap;

@@ -7,13 +7,15 @@ import PasswordField from "@components/PasswordField";
 import useAuth from "@hooks/useAuth";
 
 import { accountErrors } from "./accountErrors";
+import ConfirmWithProvider from "./ConfirmWithProvider";
 
-function DeleteAccountSection() {
-  const { isAdmin, deleteAccount } = useAuth();
+function DeleteAccountSection({ identities = [] }) {
+  const { user, isAdmin, deleteAccount } = useAuth();
   const [confirming, setConfirming] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [formError, setFormError] = useState("");
+  const [needsReauth, setNeedsReauth] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleCancel = () => {
@@ -21,13 +23,15 @@ function DeleteAccountSection() {
     setPassword("");
     setError("");
     setFormError("");
+    setNeedsReauth(false);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError("");
+    setNeedsReauth(false);
 
-    if (!password) {
+    if (user.hasPassword && !password) {
       setError("Please enter your password.");
       return;
     }
@@ -38,10 +42,15 @@ function DeleteAccountSection() {
       // Signs out on success, which unmounts this page.
       await deleteAccount({ password });
     } catch (requestError) {
-      const { fields, form } = accountErrors(requestError);
+      if (requestError.code === "REAUTH_REQUIRED") {
+        setNeedsReauth(true);
+      } else {
+        const { fields, form } = accountErrors(requestError);
 
-      setError(fields.password ?? "");
-      setFormError(form);
+        setError(fields.password ?? "");
+        setFormError(form);
+      }
+
       setSubmitting(false);
     }
   };
@@ -78,20 +87,29 @@ function DeleteAccountSection() {
             </Alert>
           ) : null}
 
-          <PasswordField
-            id="account-delete-password"
-            label="Enter your password to confirm"
-            name="password"
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-              setError("");
-            }}
-            autoComplete="current-password"
-            error={error}
-            autoFocus
-            required
-          />
+          {needsReauth ? (
+            <ConfirmWithProvider
+              identities={identities}
+              message="For your security, confirm it is you first. You will come back here to finish."
+            />
+          ) : null}
+
+          {user.hasPassword ? (
+            <PasswordField
+              id="account-delete-password"
+              label="Enter your password to confirm"
+              name="password"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setError("");
+              }}
+              autoComplete="current-password"
+              error={error}
+              autoFocus
+              required
+            />
+          ) : null}
 
           <div className="d-flex flex-wrap gap-2">
             <Button type="submit" variant="danger" disabled={submitting}>

@@ -33,14 +33,16 @@ function AccountSidebar() {
           </span>
           <div className="account-sidebar__name-block">
             <p className="account-sidebar__name">{user.displayName}</p>
-            <p className="account-sidebar__email" title={user.email}>
-              {user.email}
+            <p className="account-sidebar__email" title={user.email ?? ""}>
+              {user.email ?? "No email address yet"}
             </p>
           </div>
         </div>
 
         <div className="account-sidebar__badges">
-          {user.emailVerifiedAt ? (
+          {!user.email ? (
+            <Badge bg="danger">No email</Badge>
+          ) : user.emailVerifiedAt ? (
             <Badge bg="success">Email verified</Badge>
           ) : (
             <Badge bg="danger">Email not verified</Badge>

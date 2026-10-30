@@ -347,6 +347,7 @@ import { PATHS } from "@routes/paths";
 | `/reset-password`   | `ResetPasswordPage`             | Everyone (emailed link) |
 | `/verify-email`     | `VerifyEmailPage`               | Everyone (emailed link) |
 | `/confirm-email`    | `ConfirmEmailPage`              | Everyone (emailed link) |
+| `/oauth/callback`   | `OAuthCallbackPage`             | Everyone (from the API) |
 | `/account`          | Redirects to `/account/profile` | Signed-in visitors      |
 | `/account/profile`  | `AccountPage/ProfilePage`       | Signed-in visitors      |
 | `/account/security` | `AccountPage/SecurityPage`      | Signed-in visitors      |
@@ -364,6 +365,12 @@ sub-page. The header's `AccountMenu` lists the same sections, both read from
 `ACCOUNT_NAV_ITEMS` in `src/routes/accountNav.js`. A new section, such as order
 history or the wishlist, is a child route under `PATHS.ACCOUNT` plus one entry
 in that list.
+
+Sign-in with Google and Facebook is driven by the API. `SocialSignIn` shows a
+button for each provider the API reports, asks the API for the provider's URL
+and leaves the page. The API sends the visitor back to `/oauth/callback`, which
+picks up the new session (or explains the error code from
+`src/constants/oauth.js`) and moves on to the page the visitor came from.
 
 `Layout` is the parent route and renders the active page through `<Outlet />`,
 which keeps the shell mounted while only the page below it changes. Pages

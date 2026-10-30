@@ -39,7 +39,7 @@ function AccountMenu({ compact = false }) {
       <Dropdown.Menu className="account-menu__list">
         <Dropdown.Header className="account-menu__header">
           <span className="account-menu__header-name">{user.displayName}</span>
-          <span className="account-menu__header-email">{user.email}</span>
+          {user.email ? <span className="account-menu__header-email">{user.email}</span> : null}
         </Dropdown.Header>
         <Dropdown.Divider />
 

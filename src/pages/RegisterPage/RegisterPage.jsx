@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 
 import AuthLayout from "@components/AuthLayout";
 import PasswordField from "@components/PasswordField";
+import SocialSignIn from "@components/SocialSignIn";
 import useAuth from "@hooks/useAuth";
 import { PATHS } from "@routes/paths";
 import {
@@ -190,6 +191,8 @@ export function Component() {
           {submitting ? "Creating account..." : "Create account"}
         </Button>
       </Form>
+
+      <SocialSignIn redirect={redirectTo} label="Sign up with" />
     </AuthLayout>
   );
 }

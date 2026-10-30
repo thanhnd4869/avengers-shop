@@ -34,7 +34,8 @@
   text-decoration: underline;
 }
 
-.verify-banner__action:hover:not(:disabled) {
+.verify-banner__action:hover:not(:disabled),
+a.verify-banner__action:hover {
   color: var(--sf-text-strong);
 }
 

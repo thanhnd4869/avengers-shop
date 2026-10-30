@@ -45,6 +45,12 @@ export const router = createBrowserRouter([
         lazy: () => import("@pages/ConfirmEmailPage"),
       },
       {
+        // Outside GuestOnly: it must finish even while a session is being
+        // picked up, and linking happens while signed in.
+        path: PATHS.OAUTH_CALLBACK,
+        lazy: () => import("@pages/OAuthCallbackPage"),
+      },
+      {
         element: <RequireAuth />,
         children: [
           {
