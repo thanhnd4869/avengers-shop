@@ -45,14 +45,6 @@
   color: var(--sf-social, var(--sf-accent));
 }
 
-.header__user {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--sf-text-strong);
-  font-weight: 600;
-}
-
 .header__icon-button {
   position: relative;
   background: none;
@@ -158,6 +150,18 @@
 
 .header__link.active {
   color: var(--sf-accent);
+}
+
+/* Dropdowns inside a navbar are positioned statically, against their own
+   toggle. On the mobile bar the avatar sits left of the cart and the menu
+   button, so the account menu is anchored to this whole group instead, which
+   ends at the page gutter and keeps the menu on screen. */
+.header__mobile-actions {
+  position: relative;
+}
+
+.header__mobile-actions .account-menu {
+  position: static;
 }
 
 .header__toggle {

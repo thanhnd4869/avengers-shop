@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 
-import { GuestOnly, RequireAdmin } from "@components/AuthGuard";
+import { GuestOnly, RequireAdmin, RequireAuth } from "@components/AuthGuard";
 import Layout from "@components/Layout";
 import PageLoader from "@components/PageLoader";
 
@@ -39,6 +39,33 @@ export const router = createBrowserRouter([
       {
         path: PATHS.VERIFY_EMAIL,
         lazy: () => import("@pages/VerifyEmailPage"),
+      },
+      {
+        path: PATHS.CONFIRM_EMAIL,
+        lazy: () => import("@pages/ConfirmEmailPage"),
+      },
+      {
+        element: <RequireAuth />,
+        children: [
+          {
+            // The account area is a shell (summary and section menu) around
+            // one sub-page at a time; new sections such as orders or the
+            // wishlist are added as further children.
+            path: PATHS.ACCOUNT,
+            lazy: () => import("@pages/AccountPage"),
+            children: [
+              { index: true, element: <Navigate to={PATHS.ACCOUNT_PROFILE} replace /> },
+              {
+                path: PATHS.ACCOUNT_PROFILE,
+                lazy: () => import("@pages/AccountPage/ProfilePage"),
+              },
+              {
+                path: PATHS.ACCOUNT_SECURITY,
+                lazy: () => import("@pages/AccountPage/SecurityPage"),
+              },
+            ],
+          },
+        ],
       },
       {
         element: <RequireAdmin />,

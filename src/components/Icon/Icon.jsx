@@ -20,6 +20,7 @@ import {
   faShieldHalved,
   faSliders,
   faStar,
+  faTrashCan,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -54,6 +55,7 @@ const ICONS = {
   check: faCircleCheck,
   eye: faEye,
   "eye-slash": faEyeSlash,
+  trash: faTrashCan,
   facebook: faFacebook,
   google: faGooglePlus,
   "google-plus": faGooglePlus,

@@ -7,6 +7,7 @@ import { onSessionEnded } from "@services/session";
 export const SESSION_NOTICES = Object.freeze({
   revoked: "You were signed out because your account signed in on another device.",
   expired: "Your session has expired. Please sign in again.",
+  deleted: "Your account was deleted.",
 });
 
 function AuthProvider({ children }) {
@@ -59,11 +60,25 @@ function AuthProvider({ children }) {
     }
   }, []);
 
-  // Used after the email is verified, so the banner disappears at once.
+  // Used after the email is verified or the profile changes, so the header
+  // and the banner follow at once.
   const updateUser = useCallback((user) => {
     setState((current) =>
       current.user && current.user.id === user.id ? { ...current, user } : current,
     );
+  }, []);
+
+  const changePassword = useCallback(
+    async (passwords) => signedIn(await authService.changePassword(passwords)),
+    [signedIn],
+  );
+
+  // The account route then sends the visitor to sign in, where the notice
+  // confirms the deletion.
+  const deleteAccount = useCallback(async (confirmation) => {
+    await authService.deleteAccount(confirmation);
+    setState({ status: "anonymous", user: null });
+    setNotice(SESSION_NOTICES.deleted);
   }, []);
 
   const value = useMemo(
@@ -76,8 +91,10 @@ function AuthProvider({ children }) {
       register,
       logout,
       updateUser,
+      changePassword,
+      deleteAccount,
     }),
-    [state, notice, login, register, logout, updateUser],
+    [state, notice, login, register, logout, updateUser, changePassword, deleteAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -2,8 +2,9 @@ import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link, NavLink, useLocation, useNavigate } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 
+import AccountMenu from "@components/AccountMenu";
 import Icon from "@components/Icon";
 import { APP_NAME } from "@constants/app";
 import useAsync from "@hooks/useAsync";
@@ -23,21 +24,33 @@ const NAV_ITEMS = [
 function Header() {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isAdmin, logout } = useAuth();
+  const { user } = useAuth();
   // Brings the visitor back to the page they were on once signed in.
   const isAuthPage = [PATHS.LOGIN, PATHS.REGISTER].includes(location.pathname);
-
-  const handleLogout = async () => {
-    // Signed out locally even if the server cannot be reached.
-    await logout().catch(() => {});
-    navigate(PATHS.HOME);
-  };
   const loginTo = isAuthPage
     ? PATHS.LOGIN
     : `${PATHS.LOGIN}?redirect=${encodeURIComponent(location.pathname + location.search)}`;
   const socials = useAsync(() => getSocialLinks(), []);
   const socialLinks = socials.error ? [] : (socials.data?.data ?? []);
+  // Until the cart exists the count is always zero, and an empty cart shows
+  // no badge at all.
+  const cartCount = 0;
+
+  const accountControl = (compact) =>
+    user ? (
+      <AccountMenu compact={compact} />
+    ) : (
+      <Link to={loginTo} className="header__icon-button" aria-label="Sign in" title="Sign in">
+        <Icon name="login" />
+      </Link>
+    );
+
+  const cartLink = (
+    <Link to={PATHS.CART} className="header__icon-button" aria-label={`Cart, ${cartCount} items`}>
+      <Icon name="cart" />
+      {cartCount > 0 ? <span className="header__cart-count">{cartCount}</span> : null}
+    </Link>
+  );
 
   return (
     <header className="header">
@@ -61,36 +74,8 @@ function Header() {
             <button type="button" className="header__icon-button" aria-label="Search">
               <Icon name="search" />
             </button>
-            {user ? (
-              <>
-                <span className="header__user" title={user.email}>
-                  <Icon name="user" />
-                  {user.displayName}
-                </span>
-                {isAdmin ? (
-                  <Link to={PATHS.ADMIN} className="header__icon-button" aria-label="Admin">
-                    <Icon name="gauge" />
-                  </Link>
-                ) : null}
-                <button
-                  type="button"
-                  className="header__icon-button"
-                  aria-label="Sign out"
-                  title="Sign out"
-                  onClick={handleLogout}
-                >
-                  <Icon name="logout" />
-                </button>
-              </>
-            ) : (
-              <Link to={loginTo} className="header__icon-button" aria-label="Sign in">
-                <Icon name="login" />
-              </Link>
-            )}
-            <Link to={PATHS.CART} className="header__icon-button" aria-label="Cart">
-              <Icon name="cart" />
-              <span className="header__cart-count">0</span>
-            </Link>
+            {accountControl(false)}
+            {cartLink}
           </div>
         </Container>
       </div>
@@ -106,7 +91,13 @@ function Header() {
           <Navbar.Brand as={Link} to={PATHS.HOME} className="header__brand">
             <img src="/assets/squadforce/logo.svg" alt={APP_NAME} />
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="main-navigation" className="header__toggle" />
+          {/* The top bar is hidden below lg, so the account and the cart move
+              next to the menu button there instead of disappearing. */}
+          <div className="header__mobile-actions d-flex d-lg-none align-items-center gap-2 ms-auto">
+            {accountControl(true)}
+            {cartLink}
+            <Navbar.Toggle aria-controls="main-navigation" className="header__toggle ms-1" />
+          </div>
           <Navbar.Collapse id="main-navigation">
             <Nav className="ms-auto align-items-lg-center gap-lg-1">
               {NAV_ITEMS.map((item) => (

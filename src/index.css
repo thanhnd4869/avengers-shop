@@ -13,8 +13,11 @@ body {
   min-height: 100vh;
 }
 
+/* `clip` rather than `hidden`: it trims wide decorations the same way but
+   does not create a scroll container, so `position: sticky` inside a page
+   still sticks to the viewport. */
 main {
-  overflow: hidden;
+  overflow: clip;
 }
 
 ::selection {

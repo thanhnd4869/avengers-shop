@@ -338,11 +338,32 @@ import { PATHS } from "@routes/paths";
 <Link to={PATHS.HOME}>Back to home</Link>;
 ```
 
-| Path         | Page                      |
-| ------------ | ------------------------- |
-| `/`          | `HomePage`                |
-| `/not-found` | `NotFoundPage`            |
-| `*`          | Redirects to `/not-found` |
+| Path                | Page                            | Access                  |
+| ------------------- | ------------------------------- | ----------------------- |
+| `/`                 | `HomePage`                      | Everyone                |
+| `/login`            | `LoginPage`                     | Signed-out visitors     |
+| `/register`         | `RegisterPage`                  | Signed-out visitors     |
+| `/forgot-password`  | `ForgotPasswordPage`            | Signed-out visitors     |
+| `/reset-password`   | `ResetPasswordPage`             | Everyone (emailed link) |
+| `/verify-email`     | `VerifyEmailPage`               | Everyone (emailed link) |
+| `/confirm-email`    | `ConfirmEmailPage`              | Everyone (emailed link) |
+| `/account`          | Redirects to `/account/profile` | Signed-in visitors      |
+| `/account/profile`  | `AccountPage/ProfilePage`       | Signed-in visitors      |
+| `/account/security` | `AccountPage/SecurityPage`      | Signed-in visitors      |
+| `/admin/*`          | `AdminContactMessagesPage`      | Administrators          |
+| `/not-found`        | `NotFoundPage`                  | Everyone                |
+| `*`                 | Redirects to `/not-found`       |                         |
+
+`GuestOnly`, `RequireAuth` and `RequireAdmin` in `src/components/AuthGuard`
+wrap these routes. A signed-out visitor on `/account` is sent to sign in and
+brought back afterwards.
+
+`AccountPage` is the shell of the account area: it renders the account summary
+and section menu (`AccountSidebar`) beside an `<Outlet />` for the current
+sub-page. The header's `AccountMenu` lists the same sections, both read from
+`ACCOUNT_NAV_ITEMS` in `src/routes/accountNav.js`. A new section, such as order
+history or the wishlist, is a child route under `PATHS.ACCOUNT` plus one entry
+in that list.
 
 `Layout` is the parent route and renders the active page through `<Outlet />`,
 which keeps the shell mounted while only the page below it changes. Pages

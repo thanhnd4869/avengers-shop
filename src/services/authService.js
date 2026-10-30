@@ -58,3 +58,34 @@ export function requestPasswordReset(email) {
 export function resetPassword({ token, password }) {
   return apiClient.post("/auth/reset-password", { token, password });
 }
+
+export async function updateProfile({ displayName }) {
+  return (await apiClient.patch("/auth/me", { displayName })).data;
+}
+
+/**
+ * The server ends every other session and answers with a new one for this
+ * device, so the new token replaces the old one here.
+ */
+export async function changePassword({ currentPassword, newPassword }) {
+  return startSession(
+    await apiClient.post("/auth/change-password", { currentPassword, newPassword }),
+  );
+}
+
+export async function requestEmailChange({ email, password }) {
+  return (await apiClient.post("/auth/change-email", { email, password })).data;
+}
+
+export async function cancelEmailChange() {
+  return (await apiClient.delete("/auth/change-email")).data;
+}
+
+export async function confirmEmailChange(token) {
+  return (await apiClient.post("/auth/change-email/confirm", { token })).data;
+}
+
+export async function deleteAccount({ password }) {
+  await apiClient.delete("/auth/me", { data: { password } });
+  setAccessToken(null);
+}

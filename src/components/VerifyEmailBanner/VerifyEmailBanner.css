@@ -7,6 +7,24 @@
   text-align: center;
 }
 
+/* An address can be 254 characters with no space to break at. The banner sits
+   on every page, so the address is cut to the width left on the line instead
+   of wrapping into a tall block; the tooltip has it in full. */
+.verify-banner__text {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.verify-banner__email {
+  min-width: 0;
+  max-width: 24rem;
+  margin-left: 0.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .verify-banner__action {
   padding: 0;
   background: none;

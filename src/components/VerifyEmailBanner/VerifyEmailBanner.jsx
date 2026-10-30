@@ -23,7 +23,8 @@ function VerifyEmailBanner() {
 
     try {
       await resendVerificationEmail();
-      setMessage(`A new link was sent to ${user.email}.`);
+      // The address is already on the banner, so it is not repeated here.
+      setMessage("A new link is on its way.");
     } catch (error) {
       setMessage(
         error.status === 429
@@ -38,8 +39,12 @@ function VerifyEmailBanner() {
   return (
     <div className="verify-banner" role="status">
       <Container className="d-flex flex-wrap align-items-center justify-content-center gap-2 gap-md-3">
-        <span>
-          Please verify your email address <strong>{user.email}</strong>.
+        <span className="verify-banner__text">
+          Please verify your email address
+          <strong className="verify-banner__email" title={user.email}>
+            {user.email}
+          </strong>
+          .
         </span>
         <button
           type="button"

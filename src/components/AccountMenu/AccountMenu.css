@@ -1,0 +1,103 @@
+.account-menu__toggle.dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 14rem;
+  padding: 0.125rem 0.25rem;
+  background: none;
+  border: 0;
+  color: var(--sf-text-strong);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.account-menu__toggle.dropdown-toggle:hover,
+.account-menu__toggle.dropdown-toggle:focus-visible,
+.account-menu__toggle.dropdown-toggle.show {
+  background: none;
+  color: var(--sf-accent);
+}
+
+.account-menu__toggle.dropdown-toggle:focus-visible {
+  outline: 2px solid var(--sf-accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.account-menu__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  background-color: var(--sf-accent);
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--sf-font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Long display names (up to 32 characters) are cut short rather than pushing
+   the cart and search off the bar. */
+.account-menu__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__list.dropdown-menu {
+  --bs-dropdown-bg: var(--sf-bg-elevated);
+  --bs-dropdown-border-color: var(--sf-border);
+  --bs-dropdown-color: var(--sf-text);
+  --bs-dropdown-link-color: var(--sf-text);
+  --bs-dropdown-link-hover-color: var(--sf-text-strong);
+  --bs-dropdown-link-hover-bg: var(--sf-bg-raised);
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-link-active-bg: var(--sf-accent);
+  --bs-dropdown-divider-bg: var(--sf-border);
+  --bs-dropdown-header-color: var(--sf-text-muted);
+  min-width: 14rem;
+  max-width: min(18rem, calc(100vw - 2rem));
+  margin-top: 0.5rem;
+  padding-block: 0.375rem;
+  border-top: 2px solid var(--sf-accent);
+  font-size: 0.8125rem;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.45);
+}
+
+/* Bootstrap headers never wrap, so the name and email are blocks clipped to
+   the menu width, ending in an ellipsis. React Bootstrap renders the header
+   as a `div` whose `display` Bootstrap sets to `block`, hence the selector
+   weight. */
+.account-menu__list .account-menu__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.125rem;
+}
+
+.account-menu__header-name,
+.account-menu__header-email {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__header-name {
+  color: var(--sf-text-strong);
+  font-weight: 700;
+}
+
+.account-menu__item.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+  font-weight: 600;
+}

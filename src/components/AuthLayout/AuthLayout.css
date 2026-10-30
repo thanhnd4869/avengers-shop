@@ -4,6 +4,7 @@
 
 .auth-page__grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2rem;
   max-width: 30rem;
   margin-inline: auto;
@@ -17,11 +18,15 @@
   }
 }
 
+/* Cards quote addresses back to the visitor ("a link was sent to ..."), and an
+   address may be 254 characters without a space. `anywhere` breaks such a
+   string to fit, while ordinary text still wraps between words. */
 .auth-card {
   background-color: var(--sf-bg-elevated);
   border: 1px solid var(--sf-border);
   border-top: 3px solid var(--sf-accent);
   padding: 2.5rem 2rem;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 575.98px) {
