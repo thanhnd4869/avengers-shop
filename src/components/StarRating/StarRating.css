@@ -1,0 +1,11 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: var(--sf-text-muted);
+}
+
+/* Same gold as the product cards. */
+.star-rating svg.is-filled {
+  color: #f5a623;
+}

@@ -9,8 +9,15 @@ import { getPlatforms } from "@services/platformService";
 
 import "./PlatformSection.css";
 
-/** Three platform shortcuts. The page supplies the surrounding container. */
-function PlatformSection() {
+const shopPlatformHref = (slug) => `${PATHS.SHOP}?platform=${slug}`;
+
+/**
+ * Three platform shortcuts. The page supplies the surrounding container.
+ *
+ * The shop passes the platform it is filtered by as `activeSlug`, and its own
+ * `hrefFor` so a tile keeps the other filters and the active one clears.
+ */
+function PlatformSection({ activeSlug, hrefFor = shopPlatformHref }) {
   const { data, isLoading, error } = useAsync(() => getPlatforms(), []);
 
   if (isLoading) {
@@ -40,19 +47,28 @@ function PlatformSection() {
       {/* One line at lg and up, so the vertical gutter is dropped there; its
           negative top margin would otherwise eat into the gap above. */}
       <Row className="gx-3 gx-lg-4 gy-3 gy-lg-0">
-        {data.data.slice(0, 3).map((platform) => (
-          <Col key={platform.id} lg={4}>
-            <Link to={`${PATHS.SHOP}?platform=${platform.slug}`} className="platform-tile">
-              <span className="platform-tile__icon">
-                <img src={platform.image.url} alt={platform.image.alt} loading="lazy" />
-              </span>
-              <span className="platform-tile__content">
-                <span className="platform-tile__name">{platform.name}</span>
-                <span className="platform-tile__cta">View games</span>
-              </span>
-            </Link>
-          </Col>
-        ))}
+        {data.data.slice(0, 3).map((platform) => {
+          const isActive = platform.slug === activeSlug;
+
+          return (
+            <Col key={platform.id} lg={4}>
+              <Link
+                to={hrefFor(platform.slug)}
+                className={`platform-tile ${isActive ? "is-active" : ""}`}
+                aria-current={isActive ? "true" : undefined}
+                preventScrollReset={activeSlug !== undefined}
+              >
+                <span className="platform-tile__icon">
+                  <img src={platform.image.url} alt={platform.image.alt} loading="lazy" />
+                </span>
+                <span className="platform-tile__content">
+                  <span className="platform-tile__name">{platform.name}</span>
+                  <span className="platform-tile__cta">{isActive ? "Show all" : "View games"}</span>
+                </span>
+              </Link>
+            </Col>
+          );
+        })}
       </Row>
     </section>
   );

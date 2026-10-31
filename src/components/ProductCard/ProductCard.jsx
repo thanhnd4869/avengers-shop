@@ -30,10 +30,11 @@ function Rating({ value, count, showCount = true }) {
  * the artwork beside the details, which is the shape the reference uses for the
  * best sellers and the sidebar.
  */
-function ProductCard({ product, variant = "grid" }) {
+function ProductCard({ product, variant = "grid", showDescription = false }) {
   const {
     slug,
     name,
+    shortDescription,
     image,
     priceMin,
     priceMax,
@@ -179,6 +180,9 @@ function ProductCard({ product, variant = "grid" }) {
               <Link to={href}>{name}</Link>
             </h3>
             <Rating value={ratingAverage} count={ratingCount} showCount={false} />
+            {showDescription && shortDescription ? (
+              <p className="product-card__excerpt mb-0">{shortDescription}</p>
+            ) : null}
             {/* Wraps as a unit: when the labelled button does not fit beside the
                 price it drops below it instead of overflowing the card. */}
             <div className="product-card__list-buy">

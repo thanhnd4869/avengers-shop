@@ -1,0 +1,26 @@
+.product-gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.625rem;
+  margin-top: 0.625rem;
+}
+
+.product-gallery__thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 2px solid transparent;
+  opacity: 0.6;
+  transition:
+    opacity 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+}
+
+.product-gallery__thumb:hover,
+.product-gallery__thumb.is-active {
+  opacity: 1;
+}
+
+.product-gallery__thumb.is-active {
+  border-color: var(--sf-accent);
+}

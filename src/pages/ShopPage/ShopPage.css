@@ -1,0 +1,64 @@
+.shop-page {
+  padding-block: 3rem 5rem;
+}
+
+/* Category, price and search on one row from lg up, as on the reference. */
+.shop-page__filters {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 992px) {
+  .shop-page__filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.shop-page__price .form-control {
+  min-width: 0;
+}
+
+.shop-page__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--sf-border);
+}
+
+.shop-page__count {
+  color: var(--sf-text-muted);
+  font: 700 0.75rem var(--sf-font-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shop-page__sort {
+  width: auto;
+}
+
+.shop-page__clear {
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.shop-page__clear:hover {
+  color: var(--sf-accent);
+}
+
+.shop-page__empty {
+  padding: 3rem 1.5rem;
+  background-color: var(--sf-bg-elevated);
+  text-align: center;
+}
+
+.shop-page__placeholder-media {
+  flex: 0 0 33%;
+  aspect-ratio: 3 / 4;
+}

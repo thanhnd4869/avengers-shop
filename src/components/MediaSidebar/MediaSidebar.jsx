@@ -6,12 +6,12 @@ import Placeholder from "react-bootstrap/Placeholder";
 import GalleryGrid from "@components/GalleryGrid";
 import Icon from "@components/Icon";
 import ProductCard from "@components/ProductCard";
+import SocialWidget from "@components/SocialWidget";
 import Widget from "@components/Widget";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getMedia } from "@services/mediaService";
 import { getProducts } from "@services/productService";
-import { getSocialLinks } from "@services/socialLinkService";
 
 import "./MediaSidebar.css";
 
@@ -24,7 +24,6 @@ const POPULAR_LIMIT = 3;
  * composition rather than new styling.
  */
 function MediaSidebar() {
-  const socials = useAsync(() => getSocialLinks(), []);
   const videos = useAsync(() => getMedia({ type: "video", limit: 1 }), []);
   const shots = useAsync(() => getMedia({ type: "screenshot", limit: 6 }), []);
   // Sorting by rating keeps this widget from repeating the best sellers listed
@@ -34,7 +33,6 @@ function MediaSidebar() {
     [],
   );
 
-  const socialLinks = socials.error ? [] : (socials.data?.data ?? []);
   const latestVideo = videos.error ? null : videos.data?.data[0];
   const screenshots = shots.error ? [] : (shots.data?.data ?? []);
   const products = popularProducts.error ? [] : (popularProducts.data?.data ?? []);
@@ -55,19 +53,7 @@ function MediaSidebar() {
         </Form>
       </Widget>
 
-      {socialLinks.length ? (
-        <Widget title="We Are Social" bodyClassName="p-0">
-          <ul className="media-sidebar__socials list-unstyled mb-0">
-            {socialLinks.map((social) => (
-              <li key={social.id}>
-                <a href={social.url} aria-label={social.label} data-social={social.network}>
-                  <Icon name={social.network} size={18} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Widget>
-      ) : null}
+      <SocialWidget />
 
       {latestVideo ? (
         <Widget title="Latest Video">

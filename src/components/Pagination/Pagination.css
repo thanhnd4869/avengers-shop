@@ -1,0 +1,25 @@
+.sf-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding-inline: 0.75rem;
+  background-color: var(--sf-bg-elevated);
+  color: var(--sf-text-strong);
+  font: 700 0.8125rem var(--sf-font-heading);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sf-pagination__link:hover,
+.sf-pagination__link.is-active {
+  background-color: var(--sf-accent);
+  color: #fff;
+}
+
+.sf-pagination__gap {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  color: var(--sf-text-muted);
+}

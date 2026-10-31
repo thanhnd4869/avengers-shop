@@ -1,0 +1,44 @@
+/* Four icons per row, each tile square, matching the reference block. */
+.social-widget {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.social-widget a {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  background-color: var(--sf-tile, var(--sf-bg-elevated));
+  /* The icon stays white on hover, so it overrides the global accent link
+     colour rather than inheriting it. */
+  color: var(--sf-text-strong);
+  transition: background-color 0.15s ease-in-out;
+}
+
+/*
+ * The reference shades the tiles on a five step cycle, which offsets the bands
+ * against the four column grid and stops them lining up into stripes.
+ *
+ * These set a custom property rather than `background-color` directly: a
+ * `:nth-child` selector outranks `a:hover`, so painting the background here
+ * would stop the hover colour from ever applying.
+ */
+.social-widget li:nth-child(5n) a {
+  --sf-tile: var(--sf-bg-raised);
+}
+
+.social-widget li:nth-child(5n + 2) a {
+  --sf-tile: #363d4a;
+}
+
+.social-widget li:nth-child(5n + 4) a {
+  --sf-tile: #3f4655;
+}
+
+/* Hovering reveals each network's own brand colour, keyed off the icon name the
+   API returns. `background` rather than `background-color`, because some brands
+   (Instagram, Steam) are a gradient. */
+.social-widget a:hover {
+  background: var(--sf-social-bg, var(--sf-accent));
+  color: var(--sf-text-strong);
+}

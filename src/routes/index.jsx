@@ -16,6 +16,14 @@ export const router = createBrowserRouter([
         lazy: () => import("@pages/HomePage"),
       },
       {
+        path: PATHS.SHOP,
+        lazy: () => import("@pages/ShopPage"),
+      },
+      {
+        path: PATHS.PRODUCT,
+        lazy: () => import("@pages/ProductPage"),
+      },
+      {
         element: <GuestOnly />,
         children: [
           {

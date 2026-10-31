@@ -1,0 +1,16 @@
+.shop-sidebar__categories li + li {
+  border-top: 1px solid var(--sf-border);
+}
+
+.shop-sidebar__categories a {
+  display: block;
+  padding-block: 0.625rem;
+  color: var(--sf-text-strong);
+  font: 600 0.8125rem var(--sf-font-heading);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.shop-sidebar__categories a:hover {
+  color: var(--sf-accent);
+}

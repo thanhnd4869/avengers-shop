@@ -276,6 +276,17 @@
   margin-bottom: 0;
 }
 
+/* Two lines of the blurb are enough to tell games apart in the shop grid. */
+.product-card__excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 /* Price on the left, button pushed to the right edge. `margin-left: auto`
    keeps the button right-aligned even after it wraps onto its own line, and
    bottom alignment keeps it level with the last line of a wrapping price. */

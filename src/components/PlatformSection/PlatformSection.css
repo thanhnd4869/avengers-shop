@@ -17,6 +17,12 @@
   color: var(--sf-text-strong);
 }
 
+/* The platform the shop is filtered by. */
+.platform-tile.is-active {
+  background-color: var(--sf-bg-raised);
+  box-shadow: inset 0 -3px 0 var(--sf-accent);
+}
+
 .platform-tile__icon,
 .platform-tile__icon-placeholder {
   display: flex;

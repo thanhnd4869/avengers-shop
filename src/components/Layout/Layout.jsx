@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 
 import Footer from "@components/Footer";
 import Header from "@components/Header";
@@ -13,6 +13,10 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
+      {/* A new page opens at the top and the back button returns to where the
+          visitor was. Links that only change filters opt out with
+          `preventScrollReset`. */}
+      <ScrollRestoration />
     </div>
   );
 }
