@@ -1,0 +1,21 @@
+.payment-result {
+  padding-block: 4rem 6rem;
+}
+
+.payment-result__card {
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: 2.5rem 2rem;
+  background-color: var(--sf-bg-elevated);
+  text-align: center;
+}
+
+.payment-result__title {
+  font-size: 1.375rem;
+  margin-bottom: 1rem;
+}
+
+.payment-result__card p {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}

@@ -24,6 +24,7 @@ export const PATHS = Object.freeze({
   ADMIN: "/admin",
   ADMIN_CONTACT_MESSAGES: "/admin/contact-messages",
   CHECKOUT: "/checkout/:number",
+  CHECKOUT_RESULT: "/checkout/:number/result",
   BLOG: "/blog",
   POST: "/blog/:slug",
   GALLERY: "/gallery",

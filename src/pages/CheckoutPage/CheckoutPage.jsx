@@ -9,7 +9,12 @@ import OrderSummary, { OrderStatusBadge } from "@components/OrderSummary";
 import useAsync from "@hooks/useAsync";
 import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
-import { cancelOrder, getOrder } from "@services/orderService";
+import {
+  cancelOrder,
+  getOrder,
+  getPaymentMethods,
+  startVnpayPayment,
+} from "@services/orderService";
 
 import "./CheckoutPage.css";
 
@@ -59,8 +64,28 @@ function PendingPanel({ order, onChanged }) {
   const { reload: reloadCart } = useCart();
   const [cancelling, setCancelling] = useState(false);
   const [error, setError] = useState("");
+  const [paying, setPaying] = useState(false);
+  const methods = useAsync(() => getPaymentMethods(), []);
+  const canPay = Boolean(methods.data?.data?.includes("vnpay"));
   const left = useCountdown(order.secondsLeft, onChanged);
   const urgent = left <= 60;
+
+  const handlePay = async () => {
+    setPaying(true);
+    setError("");
+
+    try {
+      const { data } = await startVnpayPayment(order.number);
+
+      // A full page load: VNPay's page is not part of this app.
+      window.location.assign(data.url);
+    } catch (cause) {
+      setPaying(false);
+      setError(cause.message);
+
+      if (cause.code === "ORDER_NOT_PENDING") onChanged();
+    }
+  };
 
   const handleCancel = async () => {
     if (!window.confirm("Cancel this order? Its keys go back on sale.")) return;
@@ -92,15 +117,32 @@ function PendingPanel({ order, onChanged }) {
 
       {error ? <Alert variant="danger">{error}</Alert> : null}
 
-      <Button variant="primary" className="w-100" disabled title="Payment opens soon">
-        Pay with VNPay
-      </Button>
-      <p className="checkout-page__note">Online payment with VNPay is coming next.</p>
+      {canPay ? (
+        <>
+          <Button
+            variant="primary"
+            className="w-100"
+            disabled={paying || cancelling}
+            onClick={handlePay}
+          >
+            {paying ? "Opening VNPay…" : "Pay with VNPay"}
+          </Button>
+          <p className="checkout-page__note">
+            You will pay on VNPay&apos;s secure page, then come back here.
+          </p>
+        </>
+      ) : (
+        <p className="checkout-page__note" role="status">
+          {methods.isLoading
+            ? "Loading payment methods…"
+            : "Online payment is not available right now. Please try again later."}
+        </p>
+      )}
 
       <Button
         variant="link"
         className="checkout-page__cancel w-100"
-        disabled={cancelling}
+        disabled={cancelling || paying}
         onClick={handleCancel}
       >
         {cancelling ? "Cancelling…" : "Cancel order"}
@@ -119,6 +161,12 @@ function EndedPanel({ order }) {
   return (
     <aside className="checkout-page__panel rounded" aria-label="Order status">
       <p className="checkout-page__ended">{messages[order.status]}</p>
+      {order.refundPending ? (
+        <Alert variant="warning">
+          We received a payment for this order that we could not use (it was paid twice, or the keys
+          sold out first). It will be refunded to you.
+        </Alert>
+      ) : null}
       <div className="d-grid gap-2">
         {order.status === "paid" ? (
           <Button

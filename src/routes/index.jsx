@@ -95,6 +95,11 @@ export const router = createBrowserRouter([
             path: PATHS.CHECKOUT,
             lazy: () => import("@pages/CheckoutPage"),
           },
+          {
+            // Where VNPay sends the shopper back after paying.
+            path: PATHS.CHECKOUT_RESULT,
+            lazy: () => import("@pages/PaymentResultPage"),
+          },
         ],
       },
       {

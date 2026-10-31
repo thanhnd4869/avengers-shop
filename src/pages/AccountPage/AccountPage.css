@@ -293,6 +293,14 @@
   color: var(--sf-accent);
 }
 
+.account-orders__refund {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #f5a623;
+  background-color: rgba(245, 166, 35, 0.1);
+  font-size: 0.875rem;
+}
+
 .account-orders__heading {
   display: flex;
   flex-wrap: wrap;

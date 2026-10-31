@@ -1,4 +1,5 @@
 import { apiClient } from "./apiClient";
+import { cachedRequest } from "./requestCache";
 
 const orderPath = (number) => `/orders/${encodeURIComponent(number)}`;
 
@@ -25,4 +26,22 @@ export function getOrder(number) {
 
 export function cancelOrder(number) {
   return apiClient.post(`${orderPath(number)}/cancel`);
+}
+
+/** Payment methods the API can take right now, e.g. `["vnpay"]`. */
+export function getPaymentMethods() {
+  return cachedRequest("/payments/methods", () => apiClient.get("/payments/methods"));
+}
+
+/** Starts a VNPay payment; answers the URL to send the shopper to. */
+export function startVnpayPayment(number) {
+  return apiClient.post(`${orderPath(number)}/payments/vnpay`);
+}
+
+/**
+ * Reports VNPay's redirect back to the API, which checks its signature and
+ * asks VNPay for the result before answering the payment's status.
+ */
+export function confirmVnpayReturn(number, params) {
+  return apiClient.post(`${orderPath(number)}/payments/vnpay/return`, { params });
 }

@@ -66,6 +66,12 @@ export function Component() {
           {order.paidAt ? `, paid on ${formatDate(order.paidAt)}` : ""}.
         </p>
         <p className="account-card__intro">{STATUS_NOTES[order.status]}</p>
+        {order.refundPending ? (
+          <p className="account-orders__refund" role="status">
+            We received a payment for this order that we could not use (it was paid twice, or the
+            keys sold out first). It will be refunded to you.
+          </p>
+        ) : null}
 
         <OrderSummary order={order} />
       </section>
