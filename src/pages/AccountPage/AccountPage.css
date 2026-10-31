@@ -221,6 +221,86 @@
   font-size: 0.875rem;
 }
 
+/* Order history: one row per order, which wraps under md. Order lists may use
+   the full content width rather than the form line length. */
+.account-page__sections.account-orders {
+  max-width: none;
+}
+
+.account-orders__list {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.account-orders__list li + li {
+  border-top: 1px solid var(--sf-border);
+}
+
+.account-orders__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.375rem 1rem;
+  align-items: center;
+  padding: 0.875rem 0.5rem;
+  color: var(--sf-text);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.account-orders__row:hover {
+  background-color: var(--sf-bg-raised);
+  color: var(--sf-text);
+}
+
+@media (min-width: 768px) {
+  .account-orders__row {
+    grid-template-columns: minmax(0, 1.4fr) auto minmax(0, 1fr) auto minmax(6rem, auto);
+  }
+}
+
+.account-orders__number {
+  color: var(--sf-text-strong);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.account-orders__date,
+.account-orders__count {
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+}
+
+.account-orders__total {
+  justify-self: end;
+  color: var(--sf-text-strong);
+  font-family: var(--sf-font-heading);
+  white-space: nowrap;
+}
+
+.account-orders__empty {
+  padding-block: 1.5rem;
+  text-align: center;
+}
+
+.account-orders__back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+}
+
+.account-orders__back:hover {
+  color: var(--sf-accent);
+}
+
+.account-orders__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .account-card__hint {
   margin: 1rem 0 0;
   color: var(--sf-text-muted);

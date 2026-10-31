@@ -6,11 +6,9 @@ import { Link } from "react-router";
 import Icon from "@components/Icon";
 import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
-import { formatPriceRange } from "@utils/format";
+import { formatMoney } from "@utils/format";
 
 import "./MiniCart.css";
-
-const formatMoney = (value, currency) => formatPriceRange(value, value, currency);
 
 // A quick look, not the whole cart: past this many lines the menu links to
 // the cart page instead of growing a long scrolling list.

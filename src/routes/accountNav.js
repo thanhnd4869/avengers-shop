@@ -7,5 +7,6 @@ import { PATHS } from "./paths";
  */
 export const ACCOUNT_NAV_ITEMS = Object.freeze([
   { to: PATHS.ACCOUNT_PROFILE, label: "Profile", icon: "user" },
+  { to: PATHS.ACCOUNT_ORDERS, label: "Orders", icon: "key" },
   { to: PATHS.ACCOUNT_SECURITY, label: "Security", icon: "lock" },
 ]);

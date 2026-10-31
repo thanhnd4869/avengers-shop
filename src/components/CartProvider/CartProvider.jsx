@@ -15,7 +15,7 @@ import {
 const EMPTY_CART = Object.freeze({
   items: [],
   removed: [],
-  summary: { itemCount: 0, subtotal: 0, currency: "USD", canCheckout: false },
+  summary: { itemCount: 0, subtotal: 0, currency: "VND", canCheckout: false },
 });
 
 export const CART_NOTICES = Object.freeze({

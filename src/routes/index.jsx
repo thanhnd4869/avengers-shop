@@ -81,7 +81,19 @@ export const router = createBrowserRouter([
                 path: PATHS.ACCOUNT_SECURITY,
                 lazy: () => import("@pages/AccountPage/SecurityPage"),
               },
+              {
+                path: PATHS.ACCOUNT_ORDERS,
+                lazy: () => import("@pages/AccountPage/OrdersPage"),
+              },
+              {
+                path: PATHS.ACCOUNT_ORDER,
+                lazy: () => import("@pages/AccountPage/OrderDetailPage"),
+              },
             ],
+          },
+          {
+            path: PATHS.CHECKOUT,
+            lazy: () => import("@pages/CheckoutPage"),
           },
         ],
       },

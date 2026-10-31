@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Placeholder from "react-bootstrap/Placeholder";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import Icon from "@components/Icon";
 import QuantityInput from "@components/QuantityInput";
 import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
-import { formatPriceRange } from "@utils/format";
+import { createOrder } from "@services/orderService";
+import { formatMoney } from "@utils/format";
+
+function newIdempotencyKey() {
+  return crypto.randomUUID();
+}
 
 import "./CartPage.css";
-
-const formatMoney = (value, currency) => formatPriceRange(value, value, currency);
 
 function lineMessage(item) {
   if (item.status === "sold_out") return "Sold out on this platform. Remove it to continue.";
@@ -99,7 +102,13 @@ export function Component() {
     removeItem,
     clear,
   } = useCart();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [pendingNumber, setPendingNumber] = useState(null);
+  const [checkingOut, setCheckingOut] = useState(false);
+  // One key per checkout attempt: kept while the request is retried or
+  // clicked twice, replaced once the attempt ends either way.
+  const attemptKey = useRef(null);
   const { items, summary } = cart;
 
   const run = (action) => {
@@ -107,6 +116,39 @@ export function Component() {
     action().catch((cause) => {
       if (cause.code !== "STALE") setError(cause.message);
     });
+  };
+
+  const handleCheckout = async () => {
+    setError("");
+    setPendingNumber(null);
+    setCheckingOut(true);
+    attemptKey.current ??= newIdempotencyKey();
+
+    try {
+      const { data: order } = await createOrder({
+        idempotencyKey: attemptKey.current,
+        expectedTotal: summary.subtotal,
+      });
+
+      attemptKey.current = null;
+      navigate(buildPath(PATHS.CHECKOUT, { number: order.number }));
+    } catch (cause) {
+      // A network failure may have reached the API, so the same key is kept
+      // for the retry; any answer from the API ends this attempt.
+      if (cause.status) attemptKey.current = null;
+
+      if (cause.code === "PENDING_ORDER_EXISTS") {
+        setPendingNumber(cause.details?.[0]?.number ?? null);
+      } else if (["PRICE_CHANGED", "OUT_OF_STOCK", "CART_NOT_READY"].includes(cause.code)) {
+        // The cart shown is out of date; fetch it again so the shopper sees
+        // what changed.
+        reload();
+      }
+
+      setError(cause.message);
+    } finally {
+      setCheckingOut(false);
+    }
   };
 
   if (status === "loading") {
@@ -162,8 +204,13 @@ export function Component() {
       Sign in to check out
     </Button>
   ) : (
-    <Button variant="primary" className="w-100" disabled title="Checkout is coming soon">
-      Proceed to checkout
+    <Button
+      variant="primary"
+      className="w-100"
+      disabled={!summary.canCheckout || isUpdating || checkingOut}
+      onClick={handleCheckout}
+    >
+      {checkingOut ? "Holding your keys…" : "Proceed to checkout"}
     </Button>
   );
 
@@ -184,6 +231,14 @@ export function Component() {
       {error ? (
         <Alert variant="danger" dismissible onClose={() => setError("")}>
           {error}
+          {pendingNumber ? (
+            <>
+              {" "}
+              <Link to={buildPath(PATHS.CHECKOUT, { number: pendingNumber })}>
+                Go to order {pendingNumber}
+              </Link>
+            </>
+          ) : null}
         </Alert>
       ) : null}
 
@@ -249,14 +304,13 @@ export function Component() {
             <p className="cart-page__blocked">Fix the highlighted games to continue.</p>
           ) : null}
 
-          {/* Checkout is the next feature; the button explains itself until
-              then. Guests are asked to sign in first, since keys are
-              delivered to an account. */}
+          {/* Guests are asked to sign in first, since keys are delivered to
+              an account. */}
           {checkoutButton}
           <p className="cart-page__note">
             {isGuest
               ? "Your cart is kept when you sign in."
-              : "Checkout opens soon. Your cart is saved to your account."}
+              : "Your keys are held for 10 minutes while you pay."}
           </p>
         </aside>
       </div>
