@@ -1,0 +1,156 @@
+/* The toggle reuses the header icon button; Bootstrap's caret and button
+   chrome are removed so it looks like the other header icons. */
+.mini-cart__toggle.dropdown-toggle {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+  --bs-btn-bg: transparent;
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-active-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-color: var(--sf-text);
+  --bs-btn-hover-color: var(--sf-accent);
+  --bs-btn-active-color: var(--sf-accent);
+  border: 0;
+  letter-spacing: normal;
+}
+
+.mini-cart__toggle.dropdown-toggle::after {
+  display: none;
+}
+
+.mini-cart__toggle.dropdown-toggle.show {
+  color: var(--sf-accent);
+}
+
+.mini-cart__menu.dropdown-menu {
+  --bs-dropdown-bg: var(--sf-bg-elevated);
+  --bs-dropdown-border-color: var(--sf-border);
+  --bs-dropdown-color: var(--sf-text);
+  width: min(22rem, calc(100vw - 2rem));
+  margin-top: 0.5rem;
+  padding: 0;
+  border-top: 2px solid var(--sf-accent);
+  font-size: 0.8125rem;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.45);
+}
+
+/* Inside the collapsed navbar Bootstrap places the menu with plain CSS under
+   the cart icon, which sits left of the menu button, so the menu ran off the
+   left of a phone screen. Like the account menu, it is anchored to the whole
+   mobile group, whose right edge is the page gutter; its width follows the
+   viewport since that group is only a few icons wide. */
+.header__mobile-actions .mini-cart {
+  position: static;
+}
+
+.header__mobile-actions .mini-cart__menu.dropdown-menu[data-bs-popper] {
+  right: 0;
+  left: auto;
+  width: min(22rem, calc(100vw - 2rem));
+}
+
+.mini-cart__empty {
+  padding: 1.25rem;
+  text-align: center;
+}
+
+/* At most five lines are shown, but on a short screen even those scroll
+   inside the menu rather than pushing the total off the bottom. Not
+   `list-unstyled`: its `padding-left: 0` would cancel the left inset and push
+   the thumbnails against the menu edge. */
+.mini-cart__items {
+  max-height: min(26rem, 50vh);
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* Thumbnail, details and the remove button share one row, centred on the
+   thumbnail so short details do not hang at its top edge. */
+.mini-cart__item {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  gap: 0.875rem;
+  align-items: center;
+}
+
+.mini-cart__item + .mini-cart__item {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sf-border);
+}
+
+.mini-cart__details {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+/* Two lines tell apart games whose names start alike; anything longer ends in
+   an ellipsis, and a name without spaces breaks rather than overflowing. */
+.mini-cart__name {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  color: var(--sf-text-strong);
+  font: 700 0.75rem/1.35 var(--sf-font-heading);
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.mini-cart__meta {
+  overflow: hidden;
+  color: var(--sf-text-muted);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-cart__price {
+  color: var(--sf-text-strong);
+  font-weight: 600;
+}
+
+.mini-cart__remove {
+  display: inline-flex;
+  padding: 0.375rem;
+  border: 0;
+  background: none;
+  color: var(--sf-text-muted);
+}
+
+.mini-cart__remove:hover:not(:disabled) {
+  color: var(--sf-accent);
+}
+
+.mini-cart__more {
+  display: block;
+  padding: 0.625rem 1.25rem;
+  border-top: 1px solid var(--sf-border);
+  color: var(--sf-text-muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.mini-cart__more:hover {
+  color: var(--sf-accent);
+}
+
+.mini-cart__footer {
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid var(--sf-border);
+}
+
+.mini-cart__subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  color: var(--sf-text-strong);
+  font-family: var(--sf-font-heading);
+  text-transform: uppercase;
+}

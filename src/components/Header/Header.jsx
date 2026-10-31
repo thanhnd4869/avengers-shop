@@ -6,6 +6,7 @@ import { Link, NavLink, useLocation } from "react-router";
 
 import AccountMenu from "@components/AccountMenu";
 import Icon from "@components/Icon";
+import MiniCart from "@components/MiniCart";
 import { APP_NAME } from "@constants/app";
 import useAsync from "@hooks/useAsync";
 import useAuth from "@hooks/useAuth";
@@ -32,9 +33,6 @@ function Header() {
     : `${PATHS.LOGIN}?redirect=${encodeURIComponent(location.pathname + location.search)}`;
   const socials = useAsync(() => getSocialLinks(), []);
   const socialLinks = socials.error ? [] : (socials.data?.data ?? []);
-  // Until the cart exists the count is always zero, and an empty cart shows
-  // no badge at all.
-  const cartCount = 0;
 
   const accountControl = (compact) =>
     user ? (
@@ -45,12 +43,8 @@ function Header() {
       </Link>
     );
 
-  const cartLink = (
-    <Link to={PATHS.CART} className="header__icon-button" aria-label={`Cart, ${cartCount} items`}>
-      <Icon name="cart" />
-      {cartCount > 0 ? <span className="header__cart-count">{cartCount}</span> : null}
-    </Link>
-  );
+  // Each bar gets its own menu id; only one of them is visible at a time.
+  const cartLink = (compact) => <MiniCart id={compact ? "mini-cart-compact" : "mini-cart"} />;
 
   return (
     <header className="header">
@@ -75,7 +69,7 @@ function Header() {
               <Icon name="search" />
             </button>
             {accountControl(false)}
-            {cartLink}
+            {cartLink(false)}
           </div>
         </Container>
       </div>
@@ -95,7 +89,7 @@ function Header() {
               next to the menu button there instead of disappearing. */}
           <div className="header__mobile-actions d-flex d-lg-none align-items-center gap-2 ms-auto">
             {accountControl(true)}
-            {cartLink}
+            {cartLink(true)}
             <Navbar.Toggle aria-controls="main-navigation" className="header__toggle ms-1" />
           </div>
           <Navbar.Collapse id="main-navigation">

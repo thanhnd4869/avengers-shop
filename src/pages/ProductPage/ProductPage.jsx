@@ -12,11 +12,14 @@ import { Link, useParams } from "react-router";
 import Icon from "@components/Icon";
 import ProductCard from "@components/ProductCard";
 import ProductGallery from "@components/ProductGallery";
+import QuantityInput from "@components/QuantityInput";
 import SectionHeading from "@components/SectionHeading";
 import ShopSidebar from "@components/ShopSidebar";
 import StarRating from "@components/StarRating";
 import useAsync from "@hooks/useAsync";
+import useCart from "@hooks/useCart";
 import { PATHS } from "@routes/paths";
+import { MAX_QUANTITY } from "@services/guestCart";
 import { getProduct, getProductReviews, getRelatedProducts } from "@services/productService";
 import { formatDate, formatPriceRange } from "@utils/format";
 
@@ -44,7 +47,36 @@ function PurchasePanel({ product }) {
   const showEdition = new Set(variants.map((variant) => variant.edition)).size > 1;
   // A single variant needs no choice, so it is selected from the start.
   const [variantId, setVariantId] = useState(variants.length === 1 ? variants[0].id : "");
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const { addItem } = useCart();
   const variant = variants.find((item) => item.id === variantId);
+  const canBuy = Boolean(variant?.inStock);
+
+  const chooseVariant = (id) => {
+    setVariantId(id);
+    setFeedback(null);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!canBuy) return;
+
+    setAdding(true);
+    setFeedback(null);
+
+    try {
+      await addItem(variant.id, quantity);
+      setFeedback({ type: "success", message: `${product.name} was added to your cart.` });
+      setQuantity(1);
+    } catch (error) {
+      if (error.code !== "STALE") setFeedback({ type: "error", message: error.message });
+    } finally {
+      setAdding(false);
+    }
+  };
 
   const price = variant
     ? formatPriceRange(variant.price, variant.price, variant.currency)
@@ -69,15 +101,11 @@ function PurchasePanel({ product }) {
         <p className="product-page__summary">{product.shortDescription}</p>
       ) : null}
 
-      <Form
-        onSubmit={(event) => event.preventDefault()}
-        className="product-page__buy"
-        aria-label="Buy this game"
-      >
+      <Form onSubmit={handleSubmit} className="product-page__buy" aria-label="Buy this game">
         {variants.length > 1 ? (
           <Form.Group controlId="product-variant" className="product-page__variant">
             <Form.Label>Platform</Form.Label>
-            <Form.Select value={variantId} onChange={(event) => setVariantId(event.target.value)}>
+            <Form.Select value={variantId} onChange={(event) => chooseVariant(event.target.value)}>
               <option value="">Choose an option</option>
               {variants.map((item) => (
                 <option key={item.id} value={item.id} disabled={!item.inStock}>
@@ -97,19 +125,42 @@ function PurchasePanel({ product }) {
           <p className="product-page__stock is-out mb-0">Sold out on this platform</p>
         ) : null}
 
-        {/* The cart is the next feature; until it exists the button explains
-            itself rather than silently doing nothing. */}
-        <Button
-          type="submit"
-          variant="primary"
-          disabled
-          title="The cart is coming soon"
-          className="product-page__add"
-        >
-          <Icon name="cart-plus" size={16} className="me-2" />
-          Add to cart
-        </Button>
-        <p className="product-page__note mb-0">Checkout opens soon.</p>
+        <div className="product-page__actions">
+          <QuantityInput
+            value={quantity}
+            max={MAX_QUANTITY}
+            disabled={!canBuy || adding}
+            onChange={setQuantity}
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!canBuy || adding}
+            className="product-page__add"
+          >
+            <Icon name="cart-plus" size={16} className="me-2" />
+            {adding ? "Adding…" : "Add to cart"}
+          </Button>
+        </div>
+
+        {feedback ? (
+          <p
+            className={`product-page__feedback mb-0 ${feedback.type === "error" ? "is-error" : ""}`}
+            role={feedback.type === "error" ? "alert" : "status"}
+          >
+            {feedback.message}
+            {feedback.type === "success" ? (
+              <>
+                {" "}
+                <Link to={PATHS.CART}>View cart</Link>
+              </>
+            ) : null}
+          </p>
+        ) : !variant ? (
+          <p className="product-page__note mb-0">
+            Choose a platform to add this game to your cart.
+          </p>
+        ) : null}
       </Form>
     </div>
   );

@@ -24,6 +24,10 @@ export const router = createBrowserRouter([
         lazy: () => import("@pages/ProductPage"),
       },
       {
+        path: PATHS.CART,
+        lazy: () => import("@pages/CartPage"),
+      },
+      {
         element: <GuestOnly />,
         children: [
           {

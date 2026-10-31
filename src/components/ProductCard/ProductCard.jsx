@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Link } from "react-router";
 
 import Icon from "@components/Icon";
+import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatPriceRange } from "@utils/format";
 
@@ -43,9 +45,37 @@ function ProductCard({ product, variant = "grid", showDescription = false }) {
     ratingAverage,
     ratingCount,
     hasVariants,
+    variantId,
     inStock,
     platforms,
   } = product;
+  const { addItem } = useCart();
+  const [addState, setAddState] = useState("idle");
+  const [addError, setAddError] = useState("");
+  const resetTimer = useRef();
+
+  useEffect(() => () => clearTimeout(resetTimer.current), []);
+
+  const handleQuickAdd = async () => {
+    clearTimeout(resetTimer.current);
+    setAddState("adding");
+    setAddError("");
+
+    try {
+      await addItem(variantId, 1);
+      setAddState("added");
+    } catch (error) {
+      setAddState("idle");
+      if (error.code !== "STALE") {
+        setAddError(error.message);
+        window.alert(error.message);
+      }
+      return;
+    }
+
+    // The tick confirms the add for a moment, then the button is ready again.
+    resetTimer.current = setTimeout(() => setAddState("idle"), 1800);
+  };
 
   const href = buildPath(PATHS.PRODUCT, { slug });
   const isDiscounted = originalPriceMin != null && originalPriceMin > priceMin;
@@ -95,8 +125,39 @@ function ProductCard({ product, variant = "grid", showDescription = false }) {
   // the card has room, the icon when a container query finds it too narrow.
   // `aria-label` keeps the button named either way and `title` shows the
   // wording on hover.
-  const actionLabel = hasVariants ? "Select options" : "Add to cart";
-  const action = (
+  //
+  // A game with one variant goes straight into the cart; one with several
+  // opens its page so the shopper picks the platform first.
+  const quickAdd = !hasVariants && Boolean(variantId);
+  let actionLabel = hasVariants || !variantId ? "Select options" : "Add to cart";
+
+  if (addState === "adding") actionLabel = "Adding…";
+  if (addState === "added") actionLabel = "Added";
+
+  const actionContent = (
+    <>
+      <Icon
+        name={addState === "added" ? "check" : quickAdd ? "cart-plus" : "options"}
+        size={18}
+        className="product-card__action-icon"
+      />
+      <span className="product-card__action-label">{actionLabel}</span>
+    </>
+  );
+  const action = quickAdd ? (
+    <Button
+      type="button"
+      variant="secondary"
+      size="sm"
+      disabled={!inStock || addState === "adding"}
+      className="product-card__action"
+      aria-label={`${actionLabel}: ${name}`}
+      title={addError || actionLabel}
+      onClick={handleQuickAdd}
+    >
+      {actionContent}
+    </Button>
+  ) : (
     <Button
       as={Link}
       to={href}
@@ -107,12 +168,7 @@ function ProductCard({ product, variant = "grid", showDescription = false }) {
       aria-label={actionLabel}
       title={actionLabel}
     >
-      <Icon
-        name={hasVariants ? "options" : "cart-plus"}
-        size={18}
-        className="product-card__action-icon"
-      />
-      <span className="product-card__action-label">{actionLabel}</span>
+      {actionContent}
     </Button>
   );
 

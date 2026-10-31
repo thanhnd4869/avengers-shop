@@ -87,8 +87,25 @@
   font-size: 0.8125rem;
 }
 
-.product-page__add {
-  justify-self: start;
+.product-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.product-page__feedback {
+  color: var(--sf-text-strong);
+  font-size: 0.8125rem;
+}
+
+.product-page__feedback.is-error {
+  color: var(--sf-accent);
+}
+
+.product-page__feedback a {
+  color: var(--sf-accent);
+  font-weight: 600;
 }
 
 .product-page__note {
