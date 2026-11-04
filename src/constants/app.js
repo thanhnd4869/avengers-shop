@@ -12,6 +12,6 @@
  */
 const readEnv = (value, fallback) => (typeof value === "string" && value ? value : fallback);
 
-export const APP_NAME = readEnv(process.env.WEBPACK_APP_NAME, "Avengers UI");
+export const APP_NAME = readEnv(process.env.WEBPACK_APP_NAME, "Avengers Store");
 
 export const API_URL = readEnv(process.env.WEBPACK_API_URL, "http://localhost:8000/api/v1");

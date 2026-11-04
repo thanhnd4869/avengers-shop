@@ -53,11 +53,11 @@ The application opens automatically at `http://localhost:3000` by default.
 
 ## Environment Variables
 
-| Variable           | Default       | Description                                     |
-| ------------------ | ------------- | ----------------------------------------------- |
-| `WEBPACK_APP_NAME` | `Avengers UI` | Application name exposed to the browser bundle. |
-| `HOST`             | `localhost`   | Webpack development server host.                |
-| `PORT`             | `3000`        | Webpack development server port.                |
+| Variable           | Default          | Description                                     |
+| ------------------ | ---------------- | ----------------------------------------------- |
+| `WEBPACK_APP_NAME` | `Avengers Store` | Application name exposed to the browser bundle. |
+| `HOST`             | `localhost`      | Webpack development server host.                |
+| `PORT`             | `3000`           | Webpack development server port.                |
 
 Only variables prefixed with `WEBPACK_` are exposed to browser code. `HOST` and `PORT` are used only by the Webpack configuration.
 
