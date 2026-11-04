@@ -1,7 +1,7 @@
 {
-  "name": "avengers-ui",
+  "name": "avengers-shop",
   "version": "1.0.0",
-  "description": "Avengers UI",
+  "description": "Avengers storefront",
   "private": true,
   "scripts": {
     "dev": "webpack serve --mode development",
@@ -16,16 +16,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thanhnd4869/avengers-ui.git"
+    "url": "git+https://github.com/thanhnd4869/avengers-shop.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/thanhnd4869/avengers-ui/issues"
+    "url": "https://github.com/thanhnd4869/avengers-shop/issues"
   },
-  "homepage": "https://github.com/thanhnd4869/avengers-ui#readme",
+  "homepage": "https://github.com/thanhnd4869/avengers-shop#readme",
   "engines": {
     "node": ">=20.19.0",
     "npm": ">=10"

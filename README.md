@@ -1,6 +1,8 @@
-# Avengers UI
+# Avengers Shop
 
-A React 19 user interface built with JavaScript, Webpack 5, and Babel.
+The customer-facing storefront: a React 19 app built with JavaScript, Webpack 5,
+and Babel. The admin app lives in `avengers-admin` and both talk to
+`avengers-api`.
 
 ## Technology Stack
 
@@ -83,7 +85,7 @@ All scripts are designed to run on Windows, macOS, and Linux.
 - Use `.js` for JavaScript files that do not contain JSX.
 - Import across layers through their alias, and use a relative path only for
   files that sit in the same folder.
-- ESLint runs during Webpack compilation. Lint errors fail the compilation and appear in the terminal and development overlay.
+- ESLint runs during Webpack compilation. In development, lint errors appear in the terminal and the overlay while the server keeps watching, so fixing them recovers on its own; a production build fails on them.
 - Prettier handles code formatting.
 - `react/prop-types` is disabled because React 19 removed runtime prop type
   checking, which makes `propTypes` declarations dead code.
@@ -233,7 +235,7 @@ reported at build time rather than by `npm run lint`.
 ## Project Structure
 
 ```text
-avengers-ui/
+avengers-shop/
 ├── public/
 │   └── index.html
 ├── src/
