@@ -28,6 +28,28 @@ export const router = createBrowserRouter([
         lazy: () => import("@pages/CartPage"),
       },
       {
+        path: PATHS.BLOG,
+        lazy: () => import("@pages/BlogPage"),
+      },
+      {
+        path: PATHS.POST,
+        lazy: () => import("@pages/PostPage"),
+      },
+      {
+        path: PATHS.GALLERY,
+        lazy: () => import("@pages/GalleryPage"),
+      },
+      {
+        path: PATHS.SEARCH,
+        lazy: () => import("@pages/SearchPage"),
+      },
+      // One page component for the help centre and the policies; it reads
+      // the route to know which page to load.
+      ...[PATHS.FAQ, PATHS.REFUND_POLICY, PATHS.TERMS, PATHS.PRIVACY].map((path) => ({
+        path,
+        lazy: () => import("@pages/ContentPage"),
+      })),
+      {
         element: <GuestOnly />,
         children: [
           {

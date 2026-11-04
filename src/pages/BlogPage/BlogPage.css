@@ -1,0 +1,31 @@
+.blog-page {
+  padding-block: 3rem 5rem;
+}
+
+.blog-page__main {
+  min-width: 0;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 992px) {
+  .blog-page__main {
+    margin-bottom: 0;
+  }
+
+  .blog-page__sidebar {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.blog-page__summary {
+  margin-bottom: 1.5rem;
+  color: var(--sf-text-muted);
+  font-size: 0.875rem;
+}
+
+.blog-page__empty {
+  padding: 3rem 1.5rem;
+  background-color: var(--sf-bg-elevated);
+  text-align: center;
+}

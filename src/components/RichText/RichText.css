@@ -1,0 +1,22 @@
+.rich-text {
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.rich-text p {
+  margin-bottom: 1.25rem;
+  white-space: pre-line;
+}
+
+.rich-text p:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text__heading {
+  margin: 2rem 0 1rem;
+  font-size: 1.125rem;
+}
+
+.rich-text__heading:first-child {
+  margin-top: 0;
+}

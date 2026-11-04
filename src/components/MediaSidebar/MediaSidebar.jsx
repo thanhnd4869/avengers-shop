@@ -23,7 +23,7 @@ const POPULAR_LIMIT = 3;
  * Every block is a `Widget`, so adding or reordering one is a matter of
  * composition rather than new styling.
  */
-function MediaSidebar() {
+function MediaSidebar({ searchValue = "" }) {
   const videos = useAsync(() => getMedia({ type: "video", limit: 1 }), []);
   const shots = useAsync(() => getMedia({ type: "screenshot", limit: 6 }), []);
   // Sorting by rating keeps this widget from repeating the best sellers listed
@@ -45,7 +45,16 @@ function MediaSidebar() {
             Search
           </Form.Label>
           <InputGroup>
-            <Form.Control id="home-search" name="q" type="search" placeholder="Search..." />
+            {/* Keyed so it shows the blog's current search after navigating. */}
+            <Form.Control
+              key={searchValue}
+              id="home-search"
+              name="q"
+              type="search"
+              placeholder="Search..."
+              maxLength={100}
+              defaultValue={searchValue}
+            />
             <Button type="submit" variant="primary" aria-label="Submit search">
               <Icon name="search" />
             </Button>

@@ -28,6 +28,7 @@ export const PATHS = Object.freeze({
   BLOG: "/blog",
   POST: "/blog/:slug",
   GALLERY: "/gallery",
+  SEARCH: "/search",
   FAQ: "/faq",
   REFUND_POLICY: "/refund-policy",
   TERMS: "/terms",

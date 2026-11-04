@@ -5,6 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, NavLink, useLocation } from "react-router";
 
 import AccountMenu from "@components/AccountMenu";
+import HeaderSearch from "@components/HeaderSearch";
 import Icon from "@components/Icon";
 import MiniCart from "@components/MiniCart";
 import { APP_NAME } from "@constants/app";
@@ -65,9 +66,7 @@ function Header() {
             ))}
           </ul>
           <div className="d-flex align-items-center gap-4">
-            <button type="button" className="header__icon-button" aria-label="Search">
-              <Icon name="search" />
-            </button>
+            <HeaderSearch />
             {accountControl(false)}
             {cartLink(false)}
           </div>
@@ -88,6 +87,7 @@ function Header() {
           {/* The top bar is hidden below lg, so the account and the cart move
               next to the menu button there instead of disappearing. */}
           <div className="header__mobile-actions d-flex d-lg-none align-items-center gap-2 ms-auto">
+            <HeaderSearch />
             {accountControl(true)}
             {cartLink(true)}
             <Navbar.Toggle aria-controls="main-navigation" className="header__toggle ms-1" />

@@ -1,0 +1,40 @@
+.search-page {
+  padding-block: 3rem 5rem;
+}
+
+.search-page__main {
+  min-width: 0;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 992px) {
+  .search-page__main {
+    margin-bottom: 0;
+  }
+
+  .search-page__sidebar {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.search-page__title {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.search-page__title span {
+  color: var(--sf-accent);
+}
+
+.search-page__section + .search-page__section {
+  margin-top: 3rem;
+}
+
+.search-page__empty {
+  margin: 0;
+  padding: 2rem 1.5rem;
+  background-color: var(--sf-bg-elevated);
+  text-align: center;
+}

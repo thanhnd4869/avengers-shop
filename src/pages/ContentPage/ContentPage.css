@@ -1,0 +1,131 @@
+.content-page {
+  padding-block: 3rem 5rem;
+}
+
+.content-page__layout {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .content-page__layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .content-page__nav {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.content-page__nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 992px) {
+  .content-page__nav ul {
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 0.25rem;
+    background-color: var(--sf-bg-elevated);
+  }
+}
+
+.content-page__link {
+  display: block;
+  padding: 0.625rem 1rem;
+  border-radius: 0.25rem;
+  background-color: var(--sf-bg-elevated);
+  color: var(--sf-text-strong);
+  font: 600 0.8125rem var(--sf-font-heading);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 992px) {
+  .content-page__link {
+    border-left: 3px solid transparent;
+    border-radius: 0;
+  }
+
+  .content-page__nav li + li .content-page__link {
+    border-top: 1px solid var(--sf-border);
+  }
+}
+
+.content-page__link:hover,
+.content-page__link.active {
+  background-color: var(--sf-bg-raised);
+  color: var(--sf-accent);
+}
+
+@media (min-width: 992px) {
+  .content-page__link.active {
+    border-left-color: var(--sf-accent);
+  }
+}
+
+.content-page__body {
+  max-width: 48rem;
+  padding: 2rem;
+  background-color: var(--sf-bg-elevated);
+}
+
+@media (max-width: 575.98px) {
+  .content-page__body {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+.content-page__title {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.content-page__summary {
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.content-page__updated {
+  margin-bottom: 2rem;
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+}
+
+.content-page__section + .content-page__section {
+  margin-top: 2rem;
+}
+
+.content-page__heading {
+  margin-bottom: 0.75rem;
+  font-size: 1.0625rem;
+}
+
+.content-page__faq {
+  --bs-accordion-bg: var(--sf-bg-raised);
+  --bs-accordion-color: var(--sf-text);
+  --bs-accordion-border-color: var(--sf-border);
+  --bs-accordion-btn-color: var(--sf-text-strong);
+  --bs-accordion-active-color: var(--sf-text-strong);
+  --bs-accordion-active-bg: var(--sf-bg-raised);
+  --bs-accordion-btn-focus-box-shadow: 0 0 0 2px var(--sf-accent);
+  margin-top: 1.5rem;
+}
+
+.content-page__faq .accordion-button {
+  font: 600 0.9375rem var(--sf-font-body);
+  text-transform: none;
+}
+
+.content-page__faq .accordion-button:not(.collapsed) {
+  box-shadow: inset 3px 0 0 var(--sf-accent);
+}
