@@ -24,6 +24,21 @@ const PREVIEW_LINES = 5;
 function MiniCart({ id }) {
   const { cart, itemCount, status, isUpdating, removeItem } = useCart();
   const [show, setShow] = useState(false);
+  // Each rise in the count replays the add animation: the key remounts the
+  // icon and badge. Loading the cart when the page opens is not an add, so
+  // only a rise seen while the cart was already loaded counts.
+  const [bump, setBump] = useState({ count: itemCount, key: 0, ready: status === "ready" });
+
+  if (bump.count !== itemCount || bump.ready !== (status === "ready")) {
+    const rose = bump.ready && status === "ready" && itemCount > bump.count;
+
+    setBump({
+      count: itemCount,
+      key: rose ? bump.key + 1 : bump.key,
+      ready: status === "ready",
+    });
+  }
+
   const { items, summary } = cart;
   const hiddenLines = Math.max(items.length - PREVIEW_LINES, 0);
 
@@ -34,10 +49,15 @@ function MiniCart({ id }) {
         className="header__icon-button mini-cart__toggle"
         aria-label={`Cart, ${itemCount} ${itemCount === 1 ? "item" : "items"}`}
       >
-        <Icon name="cart" />
-        {itemCount > 0 ? (
-          <span className="header__cart-count">{itemCount > 99 ? "99+" : itemCount}</span>
-        ) : null}
+        <span
+          key={bump.key}
+          className={`mini-cart__icon${bump.key ? " mini-cart__icon--bump" : ""}`}
+        >
+          <Icon name="cart" size={16} />
+          {itemCount > 0 ? (
+            <span className="header__cart-count">{itemCount > 99 ? "99+" : itemCount}</span>
+          ) : null}
+        </span>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="mini-cart__menu">

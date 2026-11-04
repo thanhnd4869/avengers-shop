@@ -42,7 +42,7 @@ function HeaderSearch({ className = "header__icon-button" }) {
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        <Icon name="search" />
+        <Icon name="search" size={16} />
       </button>
       <Modal
         show={open}

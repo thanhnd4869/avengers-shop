@@ -17,11 +17,15 @@ if (existsSync(envPath)) {
 }
 
 module.exports = (_, argv) => {
-  const isProduction = argv.mode === "production";
+  // `npm run dev` and `npm run build` pass `--mode`; a bare `webpack` call
+  // falls back to development instead of webpack's silent production default.
+  const mode = argv.mode ?? "development";
+  const isProduction = mode === "production";
   const devServerHost = process.env.HOST || "localhost";
   const devServerPort = Number.parseInt(process.env.PORT ?? "3000", 10);
 
   return {
+    mode,
     dotenv: {
       prefix: "WEBPACK_",
     },
@@ -98,7 +102,11 @@ module.exports = (_, argv) => {
         extensions: ["js", "jsx"],
         emitError: true,
         emitWarning: true,
-        failOnError: true,
+        // A failed build stops the dev server watching, and every request
+        // then waits for a rebuild that never comes. In development lint
+        // errors are reported (overlay and terminal) and the server keeps
+        // going; a production build still fails on them.
+        failOnError: isProduction,
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(publicDir, "index.html"),

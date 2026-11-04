@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -34,13 +34,33 @@ function Header() {
     : `${PATHS.LOGIN}?redirect=${encodeURIComponent(location.pathname + location.search)}`;
   const socials = useAsync(() => getSocialLinks(), []);
   const socialLinks = socials.error ? [] : (socials.data?.data ?? []);
+  // Once the menu bar's place has scrolled out of view, the bar is pinned to
+  // the top of the window, compact, with the cart, account and search in it,
+  // so the cart is always in sight. Its place keeps its height meanwhile, so
+  // the page below does not jump when the bar leaves the flow.
+  const slotRef = useRef(null);
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    const slot = slotRef.current;
+
+    if (!slot || typeof IntersectionObserver === "undefined") return undefined;
+
+    const observer = new IntersectionObserver(([entry]) =>
+      setStuck(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+    );
+
+    observer.observe(slot);
+
+    return () => observer.disconnect();
+  }, []);
 
   const accountControl = (compact) =>
     user ? (
       <AccountMenu compact={compact} />
     ) : (
       <Link to={loginTo} className="header__icon-button" aria-label="Sign in" title="Sign in">
-        <Icon name="login" />
+        <Icon name="login" size={16} />
       </Link>
     );
 
@@ -48,7 +68,7 @@ function Header() {
   const cartLink = (compact) => <MiniCart id={compact ? "mini-cart-compact" : "mini-cart"} />;
 
   return (
-    <header className="header">
+    <header className={`header${stuck ? " is-stuck" : ""}`}>
       <div className="header__topbar d-none d-lg-block">
         <Container className="d-flex align-items-center justify-content-between">
           <ul className="header__social list-unstyled d-flex gap-3 mb-0">
@@ -65,7 +85,7 @@ function Header() {
               </li>
             ))}
           </ul>
-          <div className="d-flex align-items-center gap-4">
+          <div className="header__actions">
             <HeaderSearch />
             {accountControl(false)}
             {cartLink(false)}
@@ -73,50 +93,54 @@ function Header() {
         </Container>
       </div>
 
-      <Navbar
-        expand="lg"
-        expanded={expanded}
-        onToggle={setExpanded}
-        className="header__navbar"
-        collapseOnSelect
-      >
-        <Container>
-          <Navbar.Brand as={Link} to={PATHS.HOME} className="header__brand">
-            <img src="/assets/squadforce/logo.svg" alt={APP_NAME} />
-          </Navbar.Brand>
-          {/* The top bar is hidden below lg, so the account and the cart move
-              next to the menu button there instead of disappearing. */}
-          <div className="header__mobile-actions d-flex d-lg-none align-items-center gap-2 ms-auto">
-            <HeaderSearch />
-            {accountControl(true)}
-            {cartLink(true)}
-            <Navbar.Toggle aria-controls="main-navigation" className="header__toggle ms-1" />
-          </div>
-          <Navbar.Collapse id="main-navigation">
-            <Nav className="ms-auto align-items-lg-center gap-lg-1">
-              {NAV_ITEMS.map((item) => (
-                <Nav.Link
-                  key={item.to}
-                  as={NavLink}
-                  to={item.to}
-                  end={item.end}
-                  className="header__link"
+      <div ref={slotRef} className="header__navbar-slot">
+        <Navbar
+          expand="lg"
+          expanded={expanded}
+          onToggle={setExpanded}
+          className="header__navbar"
+          collapseOnSelect
+        >
+          <Container>
+            <Navbar.Brand as={Link} to={PATHS.HOME} className="header__brand">
+              <img src="/assets/squadforce/logo.svg" alt={APP_NAME} />
+            </Navbar.Brand>
+            {/* The top bar is hidden below lg, so the account and the cart move
+              next to the menu button there instead of disappearing. On wider
+              screens the pinned bar shows them too, the top bar having
+              scrolled away. */}
+            <div className="header__actions header__mobile-actions ms-auto">
+              <HeaderSearch />
+              {accountControl(true)}
+              {cartLink(true)}
+              <Navbar.Toggle aria-controls="main-navigation" className="header__toggle" />
+            </div>
+            <Navbar.Collapse id="main-navigation">
+              <Nav className="ms-auto align-items-lg-center gap-lg-1">
+                {NAV_ITEMS.map((item) => (
+                  <Nav.Link
+                    key={item.to}
+                    as={NavLink}
+                    to={item.to}
+                    end={item.end}
+                    className="header__link"
+                    onClick={() => setExpanded(false)}
+                  >
+                    {item.label}
+                  </Nav.Link>
+                ))}
+                <Link
+                  to={PATHS.SHOP}
+                  className="btn btn-primary ms-lg-3 mt-3 mt-lg-0"
                   onClick={() => setExpanded(false)}
                 >
-                  {item.label}
-                </Nav.Link>
-              ))}
-              <Link
-                to={PATHS.SHOP}
-                className="btn btn-primary ms-lg-3 mt-3 mt-lg-0"
-                onClick={() => setExpanded(false)}
-              >
-                Buy Now
-              </Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+                  Buy Now
+                </Link>
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      </div>
     </header>
   );
 }

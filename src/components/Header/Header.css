@@ -58,27 +58,188 @@
   color: var(--sf-accent);
 }
 
+/*
+ * Search, account and cart, in the top bar and beside the menu: each is a
+ * 2.25rem box with its 16px icon centred in it, the same gap between every
+ * one, the menu button included.
+ */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header__actions .header__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+/* Cart glyph and its badge, moved together by the add animation. The box is
+   exactly the glyph, so the glyph centres like the other icons. */
+.mini-cart__icon {
+  position: relative;
+  display: block;
+  line-height: 0;
+}
+
+/* The badge sticks out past the cart's box; the menu button after it on
+   phones keeps the usual gap from the badge rather than from the box. */
+.header__mobile-actions .mini-cart {
+  margin-right: 0.5rem;
+}
+
+/* A small pill up and to the right of the cart, with a clear gap from the
+   glyph so the two never touch. */
 .header__cart-count {
   position: absolute;
-  top: 0.125rem;
-  right: 0;
-  min-width: 0.875rem;
-  height: 0.875rem;
-  padding: 0 0.2rem;
+  bottom: 40%;
+  left: calc(100% + 3px);
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
   background-color: var(--sf-accent);
   color: #fff;
   border-radius: 999px;
-  font-size: 0.5625rem;
+  font-size: 9px;
   font-weight: 700;
-  line-height: 0.875rem;
+  line-height: 14px;
   text-align: center;
-  transform: translate(25%, -25%);
+}
+
+/* Plays once each time an item is added: the cart jumps and shakes, then
+   its badge pops with a ring. */
+.mini-cart__icon--bump {
+  animation: header-cart-bump 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.mini-cart__icon--bump .header__cart-count {
+  animation: header-cart-badge 0.7s ease-out;
+}
+
+@keyframes header-cart-bump {
+  0%,
+  100% {
+    transform: none;
+  }
+
+  20% {
+    transform: translateY(-6px) scale(1.15);
+  }
+
+  40% {
+    transform: translateY(0) rotate(-12deg);
+  }
+
+  55% {
+    transform: rotate(10deg);
+  }
+
+  70% {
+    transform: rotate(-6deg);
+  }
+
+  85% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes header-cart-badge {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.7);
+  }
+
+  30% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0.5rem rgba(var(--bs-primary-rgb), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-cart__icon--bump,
+  .mini-cart__icon--bump .header__cart-count {
+    animation: none;
+  }
+}
+
+/* Holds the menu bar's place while the bar is pinned, so nothing jumps. */
+.header__navbar-slot {
+  height: 105px;
 }
 
 .header__navbar {
   height: 105px;
   padding-block: 0;
   background: rgba(0, 0, 0, 0.6);
+}
+
+/*
+ * Pinned bar: once its place scrolls away, the menu bar is fixed to the top
+ * of the window and slides in, compact and opaque, carrying the search,
+ * account and cart that the scrolled-away top bar holds on wide screens.
+ */
+.header.is-stuck .header__navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1030;
+  height: 64px;
+  background-color: rgba(10, 11, 14, 0.97);
+  border-bottom: 1px solid var(--sf-border);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
+  animation: header-slide-in 0.25s ease-out;
+}
+
+.header.is-stuck .header__brand img {
+  width: 120px;
+}
+
+@keyframes header-slide-in {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header.is-stuck .header__navbar {
+    animation: none;
+  }
+}
+
+/* Search, account and cart beside the menu: always below lg, where there is
+   no top bar, and on wider screens only in the pinned bar, after the links. */
+.header__mobile-actions {
+  display: flex;
+}
+
+@media (min-width: 992px) {
+  .header__mobile-actions {
+    display: none;
+    order: 3;
+  }
+
+  .header.is-stuck .header__mobile-actions {
+    display: flex;
+    margin-left: 1.25rem !important;
+  }
+
+  .header.is-stuck .header__link {
+    padding-block: 1.4rem !important;
+  }
+
+  .header.is-stuck .header__link::after {
+    bottom: 0.9rem;
+  }
 }
 
 .header__navbar > .container {
@@ -130,8 +291,50 @@
 }
 
 @media (max-width: 991.98px) {
+  .header__navbar-slot,
   .header__navbar {
     height: 76px;
+  }
+
+  .header.is-stuck .header__navbar {
+    height: 60px;
+  }
+
+  /* Logo and icons share one line on every phone: the logo gives way to the
+     icons rather than the icons dropping below the bar. The opened menu
+     still breaks onto its own line. */
+  .header .header__navbar > .container {
+    flex-wrap: nowrap;
+  }
+
+  .header__navbar .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding-inline: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
+    background-color: rgba(10, 11, 14, 0.97);
+  }
+
+  .header__brand {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .header__brand img {
+    max-width: 100%;
+  }
+
+  .header__mobile-actions {
+    flex-shrink: 0;
+  }
+
+  /* The opened menu drops below the pinned bar and scrolls on its own if
+     it is taller than the window. */
+  .header.is-stuck .header__navbar .navbar-collapse {
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    background-color: rgba(10, 11, 14, 0.97);
   }
 
   .header__link {
@@ -166,4 +369,21 @@
 
 .header__toggle {
   border-color: var(--sf-border);
+}
+
+/* The avatar matches the 20px icons beside it, in the same 2.5rem box. */
+.header__actions .account-menu__toggle.dropdown-toggle {
+  min-height: 2.25rem;
+  padding-block: 0;
+}
+
+/* Beside the menu button only the avatar shows: a square like the icons. */
+.header__actions #account-menu-compact {
+  justify-content: center;
+  width: 2.25rem;
+  padding: 0;
+}
+
+.header__actions #account-menu-compact::after {
+  display: none;
 }

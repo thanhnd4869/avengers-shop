@@ -5,6 +5,7 @@ import { CartContext } from "@hooks/useCart";
 import { ApiError } from "@services/apiClient";
 import * as cartService from "@services/cartService";
 import {
+  capGuestCart,
   MAX_LINES,
   MAX_QUANTITY,
   onGuestCartChange,
@@ -21,10 +22,18 @@ const EMPTY_CART = Object.freeze({
 export const CART_NOTICES = Object.freeze({
   removed: "Some games in your cart are no longer sold and were removed.",
   merged: "The games you added before signing in are now in your cart.",
+  adjusted: `Your cart was updated to our limits: up to ${MAX_QUANTITY} keys of each game and ${MAX_LINES} games per order.`,
 });
 
 function cartLimit(message) {
   return new ApiError(message, { status: 409, code: "CART_LIMIT" });
+}
+
+/** Why no more of a variant fits, worded as the API words it. */
+function limitMessage(maxQuantity) {
+  return maxQuantity >= MAX_QUANTITY
+    ? `You can buy up to ${MAX_QUANTITY} keys of this game per order.`
+    : `Only ${maxQuantity} ${maxQuantity === 1 ? "key is" : "keys are"} left for this game.`;
 }
 
 function toStoredItems(cart) {
@@ -90,6 +99,7 @@ function CartProvider({ children }) {
         setStatus("ready");
 
         if (next.removed?.length) setNotice(CART_NOTICES.removed);
+        else if (next.adjusted) setNotice(CART_NOTICES.adjusted);
       }
 
       return next;
@@ -122,8 +132,13 @@ function CartProvider({ children }) {
   const load = useCallback(
     (options) =>
       enqueue(async () => {
+        // A cart saved under the earlier, higher limits is lowered first.
+        const adjusted = capGuestCart();
+
         if (ownerRef.current === "guest") {
-          return priceGuestCart(readGuestCart());
+          const priced = await priceGuestCart(readGuestCart());
+
+          return adjusted ? { ...priced, adjusted } : priced;
         }
 
         const guestItems = readGuestCart();
@@ -204,9 +219,7 @@ function CartProvider({ children }) {
         }
 
         if (existing && existing.quantity >= line.maxQuantity) {
-          throw cartLimit(
-            `You already have the most you can buy (${line.maxQuantity}) in your cart.`,
-          );
+          throw cartLimit(limitMessage(line.maxQuantity));
         }
 
         if (wanted > line.maxQuantity) {
@@ -239,7 +252,7 @@ function CartProvider({ children }) {
           throw cartLimit(
             line.maxQuantity === 0
               ? "This game is sold out on this platform."
-              : `Only ${line.maxQuantity} can be bought.`,
+              : limitMessage(line.maxQuantity),
           );
         }
 

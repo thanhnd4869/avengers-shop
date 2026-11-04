@@ -1,3 +1,10 @@
+/* The positioning box for everything absolute inside, including the button's
+   visually hidden status text: otherwise a card scrolled out of a carousel
+   would place that text beyond the page edge and widen the page. */
+.product-card {
+  position: relative;
+}
+
 .product-card__media {
   display: block;
   position: relative;
@@ -7,6 +14,7 @@
   position: absolute;
   top: 0.75rem;
   left: 0;
+  z-index: 1;
   background-color: var(--sf-accent);
   color: #fff;
   padding: 0.25rem 0.85rem;
@@ -31,8 +39,17 @@
   letter-spacing: 0.08em;
 }
 
-.product-card__body {
-  padding: 1.25rem 0 0;
+/*
+ * Details column shared by every shape: platforms, name, rating, then the buy
+ * block pushed to the bottom, so cards in a row line up their prices and
+ * buttons whatever the length of the names above.
+ */
+.product-card__details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .product-card__platform {
@@ -44,40 +61,17 @@
   letter-spacing: 0.04em;
 }
 
+/* Two lines at most; the full name is in the link's tooltip and on its page. */
 .product-card__title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  margin: 0;
   font-size: 0.9375rem;
   line-height: 1.4;
-  margin-bottom: 0.5rem;
-  /* Break between words, not inside them, and keep the lines even. */
-  text-wrap: balance;
-}
-
-/*
- * Every card measures its own width, so the button reacts to the space it is
- * actually given rather than to the viewport: the same card can be wide in the
- * spotlight and narrow in a two-column phone grid.
- */
-.product-card {
-  container-type: inline-size;
-}
-
-.product-card__action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-/* Label by default; the icon only appears where the label is hidden. */
-.product-card__action-icon {
-  display: none;
-}
-
-/* The featured tile is itself the positioning box for its overlay, and size
-   containment would stop it stretching to the spotlight row, so it opts out. */
-.product-card--featured {
-  container-type: normal;
+  overflow-wrap: anywhere;
 }
 
 .product-card__title a {
@@ -94,7 +88,6 @@
   gap: 0.15rem;
   font-size: 0.75rem;
   color: var(--sf-text-muted);
-  margin-bottom: 1rem;
 }
 
 .product-card__rating svg {
@@ -109,11 +102,35 @@
   margin-left: 0.35rem;
 }
 
+/* Two lines of the blurb are enough to tell games apart in the shop grid. */
+.product-card__excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Price above, button below, both at the bottom of the card. */
+.product-card__buy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
 .product-card__price {
-  font-family: var(--sf-font-heading);
-  font-weight: 700;
+  min-width: 0;
   color: var(--sf-text-strong);
+  font-family: var(--sf-font-heading);
   font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .product-card__price-original {
@@ -121,20 +138,97 @@
   color: var(--sf-text-muted);
   font-size: 0.75rem;
   font-weight: 400;
-  text-decoration: line-through;
 }
 
-/* The theme uses wide button padding, which overflows a two-column grid on
-   small screens, so the card button opts out of it. */
-.product-card__footer .btn {
+/* An amount never splits; a range breaks only between its two amounts. */
+.product-card__amount {
+  white-space: nowrap;
+}
+
+/* One look whatever happens: the label stays, a spinner replaces the icon.
+   The width is fixed by the card, not the content, so nothing moves while a
+   key is being added, and it narrows with the card instead of overflowing. */
+.product-card__action {
   --bs-btn-padding-x: 0.75rem;
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 12rem;
+  white-space: nowrap;
 }
 
-/* Featured variant: full-bleed artwork with the details overlaid. */
-/* Inside a spotlight row it stretches to match the block of small cards beside
-   it, which keeps the two columns flush. Only when the row stacks (below lg)
-   does it need a height of its own. */
+.product-card__buy--inline .product-card__action {
+  width: 12rem;
+}
+
+/* Confirms the add for a moment: green, with a tick. */
+.product-card__action.is-added,
+.product-card__action.is-added:hover,
+.product-card__action.is-added:focus {
+  --bs-btn-bg: #198754;
+  --bs-btn-border-color: #198754;
+  --bs-btn-hover-bg: #198754;
+  --bs-btn-hover-border-color: #198754;
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+}
+
+.product-card__action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-card__action-icon .spinner-border-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-width: 0.15em;
+}
+
+/* Grid: artwork on top, details below. */
+.product-card--grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card--grid .product-card__details {
+  flex: 1 1 auto;
+  padding-top: 1.25rem;
+}
+
+/* List: artwork beside the details, separated by a rule. */
+.product-card--list + .product-card--list {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sf-border);
+}
+
+.product-card--list .product-card__title {
+  font-size: 0.875rem;
+}
+
+/* Leaderboard row: the artwork stretches to the height of the details. */
+.product-card--rank {
+  display: grid;
+  grid-template-columns: 6.625rem minmax(0, 1fr);
+  gap: 1rem;
+  height: 100%;
+}
+
+.product-card--rank .product-card__media {
+  align-self: stretch;
+  height: 100%;
+  min-height: 8.75rem;
+  aspect-ratio: auto;
+}
+
+/* Featured: full-bleed artwork with the details overlaid. Inside a spotlight
+   row it stretches to match the block of small cards beside it; only when the
+   row stacks (below lg) does it need a height of its own. */
 .product-card--featured {
   display: block;
 }
@@ -149,7 +243,7 @@
   position: absolute;
   inset: auto 0 0;
   padding: 3rem 1.5rem 1.5rem;
-  background: linear-gradient(to top, rgba(24, 28, 35, 0.95) 40%, transparent);
+  background: linear-gradient(to top, rgba(24, 28, 35, 0.95) 45%, transparent);
 }
 
 .product-card--featured .product-card__platform {
@@ -157,7 +251,8 @@
   color: var(--sf-text-strong);
 }
 
-.product-card__title--lg {
+.product-card--featured .product-card__title {
+  margin-bottom: 0.75rem;
   font-size: 1.25rem;
   line-height: 1.25;
 }
@@ -166,201 +261,89 @@
   font-size: 1.25rem;
 }
 
-/*
- * Rank variant: a leaderboard row laid out as a grid. The artwork column
- * matches the list variant's size (Coming Soon), so both rows of cover art line
- * up; `minmax(0, 1fr)` lets the details column shrink instead of overflowing.
- * The name always sits beside the artwork and may wrap as far as it needs.
- * The details follow the same order as every other card: platforms, name,
- * then rating with price and action.
- *
- *   [art] platforms
- *   [art] name
- *   [art] meta
- *
- * The three lines are packed together and centred against the artwork with
- * `align-content`, so spare height goes above and below them, not between.
- */
-.product-card__rank-grid {
-  display: grid;
-  /* Fill the card, which the leaderboard stretches to the row's height. */
-  height: 100%;
-  /* A third column holds the action button. Its last row stretches, so the
-     button can sit at the very bottom of the card whatever the text above it. */
-  grid-template-columns: 6.625rem minmax(0, 1fr) auto;
-  grid-template-rows: auto auto 1fr;
-  grid-template-areas:
-    "media platforms platforms"
-    "media title     title"
-    "media meta      action";
-  gap: 0.5rem 1rem;
+/* The wide featured tile has room for price and button side by side; they
+   wrap onto two lines as a pair if it does not. */
+.product-card__buy--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
 }
 
-/* Pinned to the bottom-right corner of the card, on every screen size. */
-.product-card__rank-action {
-  grid-area: action;
-  align-self: end;
-  justify-self: end;
+/* Variant picker under the button. */
+.add-to-cart {
+  --bs-popover-bg: var(--sf-bg-elevated);
+  --bs-popover-border-color: var(--sf-border);
+  --bs-popover-body-padding-x: 0;
+  --bs-popover-body-padding-y: 0.5rem;
+  --bs-popover-max-width: 18rem;
+  min-width: 15rem;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.45);
 }
 
-/* The artwork spans all three rows; it stretches to their combined height or,
-   when they are shorter, keeps its own 3:4 height. */
-.product-card__rank-grid > .product-card__media {
-  grid-area: media;
+.add-to-cart__body {
+  color: var(--sf-text);
 }
 
-.product-card__rank-platforms {
-  grid-area: platforms;
-}
-
-/* The name owns its line, so it only wraps when that whole line is too short. */
-.product-card__rank-title {
-  grid-area: title;
+.add-to-cart__title {
   margin: 0;
-  font-size: 0.9375rem;
+  padding: 0.25rem 1rem 0.5rem;
+  color: var(--sf-text-strong);
+  font: 700 0.75rem var(--sf-font-heading);
+  text-transform: uppercase;
 }
 
-/* Rating then price, stacked, aligned to the bottom of the card so the price
-   lines up with the action button beside it. */
-.product-card__rank-meta {
-  grid-area: meta;
-  align-self: end;
+.add-to-cart__options {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.add-to-cart__option {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: none;
+  color: var(--sf-text-strong);
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.add-to-cart__option:hover:not(:disabled),
+.add-to-cart__option:focus-visible {
+  background-color: var(--sf-bg-raised);
+  outline: none;
+}
+
+.add-to-cart__option:disabled {
+  color: var(--sf-text-muted);
+  cursor: not-allowed;
+}
+
+.add-to-cart__option-name {
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-/*
- * Narrow rows (phones): the name wraps onto more lines, so the details column
- * grows taller than the 3:4 artwork. The artwork then stretches to the full
- * height of the row (cropped by `object-fit: cover`) instead of leaving a gap
- * beneath it.
- */
-@container (max-width: 26rem) {
-  .product-card__rank-grid > .product-card__media {
-    align-self: stretch;
-    aspect-ratio: auto;
-    min-height: 100%;
-  }
-
-  /* The details column is narrow here, so a price range ("$49.00 - $69.00")
-     may break after the dash rather than run under the action button. Extra
-     class for specificity over the base `nowrap` rule later in this file. */
-  .product-card--rank .product-card__rank-meta .product-card__price {
-    white-space: normal;
-  }
-}
-
-.product-card--rank .product-card__rating {
-  margin-bottom: 0;
-}
-
-.product-card--rank .product-card__price {
+.add-to-cart__option-price {
+  flex-shrink: 0;
+  font-family: var(--sf-font-heading);
+  font-weight: 700;
   white-space: nowrap;
 }
 
-/* List variant: artwork beside the details, separated by a rule. */
-.product-card--list + .product-card--list {
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--sf-border);
-}
-
-.product-card--list .product-card__title {
-  font-size: 0.875rem;
-}
-
-.product-card--list .product-card__rating {
-  margin-bottom: 0;
-}
-
-/* Two lines of the blurb are enough to tell games apart in the shop grid. */
-.product-card__excerpt {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+.add-to-cart__loading,
+.add-to-cart__error {
+  margin: 0;
+  padding: 0.25rem 1rem;
   font-size: 0.8125rem;
-  line-height: 1.5;
 }
 
-/* Price on the left, button pushed to the right edge. `margin-left: auto`
-   keeps the button right-aligned even after it wraps onto its own line, and
-   bottom alignment keeps it level with the last line of a wrapping price. */
-.product-card__list-buy {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 0.5rem;
-  width: 100%;
-  margin-top: auto;
-}
-
-.product-card__list-buy .product-card__action {
-  margin-left: auto;
-}
-
-/*
- * The button shows its label wherever the card has room and switches to the
- * icon only where it does not. Each threshold is the narrowest card width,
- * measured on the home page, at which the longer label ("Select options")
- * still fits beside the price without overflowing the card:
- * - grid cards: 14rem (the two-up phone grid is ~161px);
- * - list cards: 22rem (Coming Soon at 350px and the desktop sidebar at 292px
- *   are narrower, so they use the icon; the tablet sidebar keeps the label);
- * - leaderboard rows: 26rem (phones use the icon, desktop and tablet the label).
- */
-/* Square icon buttons read as a set rather than as squashed text buttons.
-   2.5rem gives the 18px icon room and matches a comfortable touch target. */
-@container (max-width: 14rem) {
-  .product-card__footer .product-card__action {
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-  }
-
-  .product-card__footer .product-card__action-icon {
-    display: block;
-  }
-
-  .product-card__footer .product-card__action-label {
-    display: none;
-  }
-}
-
-@container (max-width: 22rem) {
-  .product-card--list .product-card__action {
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-  }
-
-  .product-card--list .product-card__action-icon {
-    display: block;
-  }
-
-  .product-card--list .product-card__action-label {
-    display: none;
-  }
-}
-
-/* Leaderboard rows narrower than 26rem (phones) switch to the icon; the
-   labelled button would collide with the price. Wider rows keep the label. */
-@container (max-width: 26rem) {
-  .product-card--rank .product-card__action {
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-  }
-
-  .product-card--rank .product-card__action-icon {
-    display: block;
-  }
-
-  .product-card--rank .product-card__action-label {
-    display: none;
-  }
+.add-to-cart__error {
+  color: #ff6b81;
 }
