@@ -212,6 +212,21 @@
   color: var(--sf-text-strong);
 }
 
+.product-page__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.75rem;
+  color: #2ecc71;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.product-page__review.is-mine {
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--sf-accent);
+}
+
 .product-page__missing {
   padding: 3rem 1.5rem;
   background-color: var(--sf-bg-elevated);

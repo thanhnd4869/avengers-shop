@@ -18,7 +18,11 @@ function useAsync(requestFn, deps) {
 
   // Resetting during render is React's documented way to adjust state when
   // inputs change. Doing it in an effect would render stale data for one frame.
-  if (!shallowEqual(previousDeps, deps)) {
+  // This render still holds the old state, so it answers PENDING itself:
+  // callers never see the previous inputs' result as if it were current.
+  const depsChanged = !shallowEqual(previousDeps, deps);
+
+  if (depsChanged) {
     setPreviousDeps(deps);
     setState(PENDING);
   }
@@ -46,7 +50,7 @@ function useAsync(requestFn, deps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
-  return state;
+  return depsChanged ? PENDING : state;
 }
 
 export default useAsync;

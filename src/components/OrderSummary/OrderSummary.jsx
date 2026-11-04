@@ -60,6 +60,14 @@ function OrderSummary({ order }) {
                   ))}
                 </ul>
               ) : null}
+              {order.status === "paid" ? (
+                <Link
+                  to={`${buildPath(PATHS.PRODUCT, { slug: item.product.slug })}#reviews`}
+                  className="order-summary__review"
+                >
+                  Write a review
+                </Link>
+              ) : null}
             </div>
             <strong className="order-summary__line-total">
               {formatMoney(item.lineTotal, order.currency)}

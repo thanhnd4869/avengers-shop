@@ -46,6 +46,25 @@ export function getProductReviews(slug, { page = 1, limit = 10 } = {}) {
   return apiClient.get(`/products/${encodeURIComponent(slug)}/reviews?${query}`);
 }
 
+const myReviewPath = (slug) => `/products/${encodeURIComponent(slug)}/reviews/mine`;
+
+/** Whether the signed-in shopper may review the game, and their review. */
+export function getMyReview(slug) {
+  return apiClient.get(myReviewPath(slug));
+}
+
+export function createReview(slug, { rating, content }) {
+  return apiClient.post(`/products/${encodeURIComponent(slug)}/reviews`, { rating, content });
+}
+
+export function updateMyReview(slug, { rating, content }) {
+  return apiClient.patch(myReviewPath(slug), { rating, content });
+}
+
+export function deleteMyReview(slug) {
+  return apiClient.delete(myReviewPath(slug));
+}
+
 /**
  * Genres such as Action Games or FPS, used by the shop filter and the
  * product page sidebar.

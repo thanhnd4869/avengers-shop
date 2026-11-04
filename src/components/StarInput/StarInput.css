@@ -1,0 +1,61 @@
+.star-input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.star-input__legend {
+  float: none;
+  width: auto;
+  margin-bottom: 0.5rem;
+  color: var(--sf-text-strong);
+  font: 700 0.75rem var(--sf-font-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.star-input__stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star-input__star {
+  display: inline-flex;
+  padding: 0.125rem;
+  border-radius: 0.25rem;
+  color: var(--sf-text-muted);
+  cursor: pointer;
+  transition:
+    color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+}
+
+.star-input__star.is-on {
+  color: #f5a623;
+}
+
+.star-input__star:hover {
+  transform: scale(1.12);
+}
+
+/* The radio is hidden, so its focus ring is drawn on the star around it. */
+.star-input__star:has(input:focus-visible) {
+  outline: 2px solid var(--sf-accent);
+  outline-offset: 1px;
+}
+
+.star-input:disabled .star-input__star {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.star-input__text {
+  margin-left: 0.5rem;
+  color: var(--sf-text-muted);
+  font-size: 0.8125rem;
+}
+
+.star-input.is-invalid .star-input__text {
+  color: var(--sf-accent);
+}

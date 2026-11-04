@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -7,12 +7,13 @@ import Nav from "react-bootstrap/Nav";
 import Placeholder from "react-bootstrap/Placeholder";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
-import { Link, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 
 import Icon from "@components/Icon";
 import ProductCard from "@components/ProductCard";
 import ProductGallery from "@components/ProductGallery";
 import QuantityInput from "@components/QuantityInput";
+import ReviewForm from "@components/ReviewForm";
 import SectionHeading from "@components/SectionHeading";
 import ShopSidebar from "@components/ShopSidebar";
 import StarRating from "@components/StarRating";
@@ -192,14 +193,37 @@ function ProductMeta({ product }) {
   );
 }
 
-function Reviews({ slug, count }) {
+function Reviews({ slug, count, onChanged }) {
   // "Show more" asks for a longer first page rather than appending pages, so
   // the list is always one consistent response.
   const [limit, setLimit] = useState(REVIEWS_PAGE_SIZE);
+  const [version, setVersion] = useState(0);
   const { data, isLoading, error } = useAsync(
     () => getProductReviews(slug, { limit }),
-    [slug, limit],
+    [slug, limit, version],
   );
+
+  const handleChanged = () => {
+    setVersion((current) => current + 1);
+    onChanged();
+  };
+
+  return (
+    <>
+      <ReviewForm slug={slug} onChanged={handleChanged} />
+      <ReviewList
+        data={data}
+        isLoading={isLoading}
+        error={error}
+        count={count}
+        limit={limit}
+        onMore={() => setLimit((current) => Math.min(current + REVIEWS_PAGE_SIZE, REVIEWS_MAX))}
+      />
+    </>
+  );
+}
+
+function ReviewList({ data, isLoading, error, count, limit, onMore }) {
   const [shown, setShown] = useState(null);
 
   // Keeps the current list on screen while a longer one loads.
@@ -225,11 +249,17 @@ function Reviews({ slug, count }) {
       </h2>
       <ol className="product-page__reviews list-unstyled mb-0">
         {reviews.map((review) => (
-          <li key={review.id} className="product-page__review">
+          <li key={review.id} className={`product-page__review ${review.mine ? "is-mine" : ""}`}>
             <StarRating value={review.rating} size={12} />
             <p className="product-page__review-meta">
-              by <strong>{review.authorName}</strong> on{" "}
+              by <strong>{review.authorName}</strong>
+              {review.mine ? " (you)" : ""} on{" "}
               <time dateTime={review.createdAt}>{formatDate(review.createdAt)}</time>
+              {review.verifiedPurchase ? (
+                <span className="product-page__verified">
+                  <Icon name="check" size={11} /> Verified purchase
+                </span>
+              ) : null}
             </p>
             <p className="mb-0">{review.content}</p>
           </li>
@@ -241,11 +271,7 @@ function Reviews({ slug, count }) {
         </Placeholder>
       ) : null}
       {reviews.length < total && limit < REVIEWS_MAX && !isLoading ? (
-        <Button
-          variant="secondary"
-          className="mt-4"
-          onClick={() => setLimit((current) => Math.min(current + REVIEWS_PAGE_SIZE, REVIEWS_MAX))}
-        >
+        <Button variant="secondary" className="mt-4" onClick={onMore}>
           Show more reviews
         </Button>
       ) : null}
@@ -313,10 +339,19 @@ function NotFound() {
   );
 }
 
-function ProductDetails({ product }) {
+function ProductDetails({ product, onReviewsChanged }) {
   const images = [product.image, ...product.gallery];
   const percent = discountPercent(product.priceMin, product.originalPriceMin);
   const platformNames = product.platforms.map((platform) => platform.name).join(", ");
+  const location = useLocation();
+  const initialTab = location.hash === "#reviews" ? "reviews" : "description";
+
+  // Scrolls to the tabs once when the page opens on the reviews tab.
+  useEffect(() => {
+    if (initialTab === "reviews") {
+      document.getElementById("product-tabs")?.scrollIntoView({ block: "start" });
+    }
+  }, [initialTab]);
 
   return (
     <>
@@ -343,7 +378,8 @@ function ProductDetails({ product }) {
         </Col>
       </Row>
 
-      <Tab.Container defaultActiveKey="description">
+      {/* Links such as "Write a review" on an order open this tab directly. */}
+      <Tab.Container defaultActiveKey={initialTab}>
         <section id="product-tabs" className="product-page__tabs rounded">
           <Nav as="ul" className="product-page__tab-nav" role="tablist">
             <Nav.Item as="li">
@@ -381,7 +417,11 @@ function ProductDetails({ product }) {
               </table>
             </Tab.Pane>
             <Tab.Pane eventKey="reviews" mountOnEnter>
-              <Reviews slug={product.slug} count={product.ratingCount} />
+              <Reviews
+                slug={product.slug}
+                count={product.ratingCount}
+                onChanged={onReviewsChanged}
+              />
             </Tab.Pane>
           </Tab.Content>
         </section>
@@ -394,11 +434,26 @@ function ProductDetails({ product }) {
 
 export function Component() {
   const { slug } = useParams();
-  const { data, isLoading, error } = useAsync(() => getProduct(slug), [slug]);
+  const [version, setVersion] = useState(0);
+  const { data, isLoading, error } = useAsync(() => getProduct(slug), [slug, version]);
+  const [product, setProduct] = useState(null);
 
+  // Keeps the page on screen while it is read again after a review changed
+  // the rating, instead of flashing the placeholder.
+  if (data?.data && data.data !== product) setProduct(data.data);
+
+  const shown = product?.slug === slug ? product : null;
   let content;
 
-  if (isLoading) {
+  if (shown) {
+    content = (
+      <ProductDetails
+        key={shown.id}
+        product={shown}
+        onReviewsChanged={() => setVersion((current) => current + 1)}
+      />
+    );
+  } else if (isLoading) {
     content = <ProductPlaceholder />;
   } else if (error?.status === 404) {
     content = <NotFound />;
@@ -411,8 +466,6 @@ export function Component() {
         </Button>
       </div>
     );
-  } else {
-    content = <ProductDetails key={data.data.id} product={data.data} />;
   }
 
   return (
