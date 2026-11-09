@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import { Link } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatMoney } from "@utils/format";
 
@@ -122,7 +123,7 @@ function ProductCard({ product, variant = "grid", showDescription = false }) {
       tabIndex={-1}
       aria-hidden="true"
     >
-      <img src={image.url} alt="" loading="lazy" />
+      <MediaImage width={640} src={image.url} alt="" loading="lazy" />
       {badge}
       {soldOut}
     </Link>
@@ -131,7 +132,7 @@ function ProductCard({ product, variant = "grid", showDescription = false }) {
   if (variant === "featured") {
     return (
       <article className="product-card product-card--featured sf-media sf-media-zoom rounded h-100">
-        <img src={image.url} alt="" loading="lazy" />
+        <MediaImage width={640} src={image.url} alt="" loading="lazy" />
         {badge}
         <div className="product-card__overlay">
           <div className="mb-2">{platformList}</div>

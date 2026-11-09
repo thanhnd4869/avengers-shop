@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import MediaImage from "@components/MediaImage";
+
 import "./ProductGallery.css";
 
 /**
@@ -13,7 +15,7 @@ function ProductGallery({ images, badge }) {
   return (
     <div className="product-gallery">
       <div className="product-gallery__main sf-media sf-ratio-3x4 rounded">
-        <img src={current.url} alt={current.alt} />
+        <MediaImage width={1280} src={current.url} alt={current.alt} />
         {badge}
       </div>
 
@@ -28,7 +30,7 @@ function ProductGallery({ images, badge }) {
                 aria-pressed={index === selected}
                 onClick={() => setSelected(index)}
               >
-                <img src={image.url} alt="" loading="lazy" />
+                <MediaImage width={160} src={image.url} alt="" loading="lazy" />
               </button>
             </li>
           ))}

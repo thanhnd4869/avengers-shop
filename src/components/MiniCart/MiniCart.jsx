@@ -4,6 +4,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatMoney } from "@utils/format";
@@ -88,7 +89,7 @@ function MiniCart({ id }) {
                     className="mini-cart__thumb sf-media sf-ratio-3x4 rounded"
                     onClick={() => setShow(false)}
                   >
-                    <img src={item.product.image.url} alt="" loading="lazy" />
+                    <MediaImage width={160} src={item.product.image.url} alt="" loading="lazy" />
                   </Link>
                   <div className="mini-cart__details">
                     <Link

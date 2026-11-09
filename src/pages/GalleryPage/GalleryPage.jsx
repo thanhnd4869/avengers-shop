@@ -6,11 +6,13 @@ import Placeholder from "react-bootstrap/Placeholder";
 import Row from "react-bootstrap/Row";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import MediaSidebar from "@components/MediaSidebar";
 import SectionHeading from "@components/SectionHeading";
 import useAsync from "@hooks/useAsync";
 import { getGalleries } from "@services/galleryService";
 import { getMedia } from "@services/mediaService";
+import { isVideoFile, videoUrl } from "@utils/media";
 
 import "./GalleryPage.css";
 
@@ -45,7 +47,7 @@ function Lightbox({ title, images, index, onClose, onMove }) {
       aria-label={`${title}: picture ${index + 1} of ${images.length}`}
     >
       <Modal.Body className="gallery-lightbox__body">
-        <img src={image.url} alt={image.alt} />
+        <MediaImage width={1920} src={image.url} alt={image.alt} />
         <button
           type="button"
           className="gallery-lightbox__close"
@@ -83,12 +85,14 @@ function Lightbox({ title, images, index, onClose, onMove }) {
 }
 
 /**
- * A YouTube video that loads the player only once it is asked to play, so
- * the page does not pull in YouTube (and its cookies) for every visitor.
+ * A YouTube video or an uploaded video file. Either loads only once it is
+ * asked to play, so the page does not pull in YouTube (and its cookies) or a
+ * large file for every visitor.
  */
 function Video({ video }) {
   const [playing, setPlaying] = useState(false);
   const id = YOUTUBE_ID.exec(video.url)?.[1];
+  const isFile = !id && isVideoFile(video.url);
   const title = video.title || video.image.alt;
 
   return (
@@ -102,14 +106,16 @@ function Video({ video }) {
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
           />
-        ) : id ? (
+        ) : playing && isFile ? (
+          <video src={videoUrl(video.url)} title={title} controls autoPlay playsInline />
+        ) : id || isFile ? (
           <button
             type="button"
             className="gallery-page__video-poster sf-media-zoom"
             aria-label={`Play video: ${title}`}
             onClick={() => setPlaying(true)}
           >
-            <img src={video.image.url} alt="" loading="lazy" />
+            <MediaImage width={960} src={video.image.url} alt="" loading="lazy" />
             <span className="gallery-page__play" aria-hidden="true" />
           </button>
         ) : (
@@ -120,7 +126,7 @@ function Video({ video }) {
             className="gallery-page__video-poster sf-media-zoom"
             aria-label={`Watch video: ${title} (opens in a new tab)`}
           >
-            <img src={video.image.url} alt="" loading="lazy" />
+            <MediaImage width={960} src={video.image.url} alt="" loading="lazy" />
             <span className="gallery-page__play" aria-hidden="true" />
           </a>
         )}
@@ -202,7 +208,7 @@ export function Component() {
                         aria-label={`View picture ${index + 1} of ${pictureList.length}`}
                         onClick={() => openPictures(index)}
                       >
-                        <img src={item.image.url} alt="" loading="lazy" />
+                        <MediaImage width={480} src={item.image.url} alt="" loading="lazy" />
                       </button>
                     </Col>
                   ))
@@ -234,7 +240,7 @@ export function Component() {
                         }
                       >
                         <span className="gallery-page__album-cover sf-media sf-media-zoom sf-ratio-4x3 rounded">
-                          <img src={album.cover.url} alt="" loading="lazy" />
+                          <MediaImage width={640} src={album.cover.url} alt="" loading="lazy" />
                           <span className="gallery-page__album-count">{album.images.length}</span>
                         </span>
                         <span className="gallery-page__album-title">{album.title}</span>

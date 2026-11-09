@@ -5,6 +5,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 
 import GalleryGrid from "@components/GalleryGrid";
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import ProductCard from "@components/ProductCard";
 import SocialWidget from "@components/SocialWidget";
 import Widget from "@components/Widget";
@@ -12,6 +13,7 @@ import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getMedia } from "@services/mediaService";
 import { getProducts } from "@services/productService";
+import { isVideoFile } from "@utils/media";
 
 import "./MediaSidebar.css";
 
@@ -68,9 +70,15 @@ function MediaSidebar({ searchValue = "" }) {
         <Widget title="Latest Video">
           <a
             className="d-block sf-media sf-media-zoom sf-ratio-16x9 rounded position-relative"
-            href={latestVideo.url}
+            // An uploaded file plays on the gallery page rather than as a bare file.
+            href={isVideoFile(latestVideo.url) ? PATHS.GALLERY : latestVideo.url}
           >
-            <img src={latestVideo.image.url} alt={latestVideo.image.alt} loading="lazy" />
+            <MediaImage
+              width={480}
+              src={latestVideo.image.url}
+              alt={latestVideo.image.alt}
+              loading="lazy"
+            />
             <span className="media-sidebar__play" aria-hidden="true" />
           </a>
         </Widget>

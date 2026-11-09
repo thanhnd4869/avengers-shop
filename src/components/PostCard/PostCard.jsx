@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import { Link } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatDate } from "@utils/format";
 
@@ -29,7 +30,7 @@ function PostThumb({ post, href, ratio = "sf-ratio-16x9", showCategory = false, 
       to={href}
       className={`post-card__media sf-media sf-media-zoom rounded ${ratio} ${className}`}
     >
-      <img src={post.image.url} alt={post.image.alt} loading="lazy" />
+      <MediaImage width={640} src={post.image.url} alt={post.image.alt} loading="lazy" />
       {showCategory ? <span className="post-card__category">{post.category.name}</span> : null}
     </Link>
   );
@@ -102,7 +103,7 @@ function PostCard({ post, variant = "grid", featured = false }) {
   return (
     <article className="post-card h-100 d-flex flex-column">
       <Link to={href} className="post-card__media sf-media sf-media-zoom sf-ratio-16x9 rounded">
-        <img src={image.url} alt={image.alt} loading="lazy" />
+        <MediaImage width={640} src={image.url} alt={image.alt} loading="lazy" />
         <span className="post-card__comments" aria-label={`${commentCount} comments`}>
           {commentCount}
         </span>

@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Placeholder from "react-bootstrap/Placeholder";
 import { Link } from "react-router";
 
+import MediaImage from "@components/MediaImage";
 import useAsync from "@hooks/useAsync";
 import { getBanners } from "@services/bannerService";
 
@@ -34,7 +35,7 @@ function HeroSection() {
       {data.data.map((banner, index) => (
         <Carousel.Item key={banner.id}>
           <div className="hero__slide sf-media">
-            <img src={banner.image.url} alt={banner.image.alt} />
+            <MediaImage width={1920} src={banner.image.url} alt={banner.image.alt} />
             <div className="hero__overlay" />
             <Container className="hero__content">
               <p className="hero__eyebrow">Featured story</p>

@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Placeholder from "react-bootstrap/Placeholder";
 import { Link } from "react-router";
 
+import MediaImage from "@components/MediaImage";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getPlatforms } from "@services/platformService";
@@ -59,7 +60,12 @@ function PlatformSection({ activeSlug, hrefFor = shopPlatformHref }) {
                 preventScrollReset={activeSlug !== undefined}
               >
                 <span className="platform-tile__icon">
-                  <img src={platform.image.url} alt={platform.image.alt} loading="lazy" />
+                  <MediaImage
+                    width={640}
+                    src={platform.image.url}
+                    alt={platform.image.alt}
+                    loading="lazy"
+                  />
                 </span>
                 <span className="platform-tile__content">
                   <span className="platform-tile__name">{platform.name}</span>

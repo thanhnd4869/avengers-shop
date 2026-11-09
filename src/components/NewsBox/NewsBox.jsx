@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatDate } from "@utils/format";
 
@@ -36,7 +37,7 @@ function NewsBox({ posts }) {
             aria-pressed={index === activeIndex}
           >
             <span className="news-box__item-img sf-media">
-              <img src={post.image.url} alt={post.image.alt} loading="lazy" />
+              <MediaImage width={160} src={post.image.url} alt={post.image.alt} loading="lazy" />
             </span>
             <span className="news-box__item-body">
               <span className="news-box__item-title">{post.title}</span>
@@ -52,7 +53,7 @@ function NewsBox({ posts }) {
 
       <div className="news-box__preview">
         <Link to={activeHref} className="news-box__preview-media sf-media">
-          <img src={active.image.url} alt={active.image.alt} loading="lazy" />
+          <MediaImage width={960} src={active.image.url} alt={active.image.alt} loading="lazy" />
           <span className="news-box__preview-category">{active.category.name}</span>
         </Link>
         <div className="news-box__preview-body">

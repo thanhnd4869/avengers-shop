@@ -3,6 +3,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 import Row from "react-bootstrap/Row";
 import { Link } from "react-router";
 
+import MediaImage from "@components/MediaImage";
 import SectionHeading from "@components/SectionHeading";
 import useAsync from "@hooks/useAsync";
 import { buildPath, PATHS } from "@routes/paths";
@@ -20,7 +21,7 @@ function LatestPost({ post }) {
   return (
     <article className="latest-post">
       <Link className="latest-post__media sf-media sf-media-zoom sf-ratio-16x9 rounded" to={href}>
-        <img src={post.image.url} alt={post.image.alt} loading="lazy" />
+        <MediaImage width={640} src={post.image.url} alt={post.image.alt} loading="lazy" />
         <span className="latest-post__comments">{post.commentCount}</span>
       </Link>
       <h3 className="latest-post__title">

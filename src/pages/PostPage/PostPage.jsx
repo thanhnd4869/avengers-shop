@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import { Link, useParams } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import MediaSidebar from "@components/MediaSidebar";
 import PostCard from "@components/PostCard";
 import PostComments from "@components/PostComments";
@@ -36,7 +37,7 @@ function PostBody({ post, commentCount }) {
         </a>
       </p>
       <div className="post-page__image sf-media sf-ratio-16x9 rounded">
-        <img src={post.image.url} alt={post.image.alt} />
+        <MediaImage width={1280} src={post.image.url} alt={post.image.alt} />
       </div>
       <RichText text={post.content || post.excerpt} className="post-page__content" />
       <PostShare title={post.title} url={window.location.href} image={post.image.url} />

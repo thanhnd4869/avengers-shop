@@ -3,6 +3,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 import Row from "react-bootstrap/Row";
 import { Link } from "react-router";
 
+import MediaImage from "@components/MediaImage";
 import { PATHS } from "@routes/paths";
 
 const TILE_CLASS = "d-block sf-media sf-media-zoom sf-ratio-1x1 rounded";
@@ -31,7 +32,9 @@ function GalleryGrid({ items, isLoading, count = 6, span = 4, gutter = "g-2" }) 
   return (
     <Row className={gutter}>
       {items.slice(0, count).map((item) => {
-        const thumb = <img src={item.image.url} alt={item.image.alt} loading="lazy" />;
+        const thumb = (
+          <MediaImage width={320} src={item.image.url} alt={item.image.alt} loading="lazy" />
+        );
         // Screenshots may point at a full-size image on another host, which the
         // router cannot navigate to, so those stay plain anchors.
         const isExternal = /^https?:\/\//.test(item.url ?? "");

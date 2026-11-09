@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 
+import MediaImage from "@components/MediaImage";
 import { buildPath, PATHS } from "@routes/paths";
 import { formatMoney } from "@utils/format";
 
@@ -34,7 +35,7 @@ function OrderSummary({ order }) {
               to={buildPath(PATHS.PRODUCT, { slug: item.product.slug })}
               className="order-summary__thumb sf-media sf-ratio-3x4 rounded"
             >
-              <img src={item.product.image.url} alt="" loading="lazy" />
+              <MediaImage width={160} src={item.product.image.url} alt="" loading="lazy" />
             </Link>
             <div className="order-summary__details">
               <Link

@@ -6,6 +6,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 import { Link, useLocation, useNavigate } from "react-router";
 
 import Icon from "@components/Icon";
+import MediaImage from "@components/MediaImage";
 import QuantityInput from "@components/QuantityInput";
 import useCart from "@hooks/useCart";
 import { buildPath, PATHS } from "@routes/paths";
@@ -33,7 +34,7 @@ function CartLine({ item, disabled, onQuantity, onRemove }) {
   return (
     <li className={`cart-line ${item.status !== "ok" ? "has-problem" : ""}`}>
       <Link to={href} className="cart-line__thumb sf-media sf-ratio-3x4 rounded">
-        <img src={item.product.image.url} alt="" loading="lazy" />
+        <MediaImage width={160} src={item.product.image.url} alt="" loading="lazy" />
       </Link>
 
       <div className="cart-line__info">
