@@ -5,6 +5,8 @@ import Placeholder from "react-bootstrap/Placeholder";
 import { Link, NavLink, useLocation } from "react-router";
 
 import RichText from "@components/RichText";
+import Seo from "@components/Seo";
+import { APP_NAME } from "@constants/app";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getPage } from "@services/pageService";
@@ -94,6 +96,25 @@ export function Component() {
 
   return (
     <Container className="content-page">
+      <Seo
+        title={page?.title ?? current.label}
+        description={page?.summary || `${current.label} of ${APP_NAME}.`}
+        path={current.path}
+        noIndex={!isLoading && !page}
+        structuredData={
+          isFaq && page
+            ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: page.sections.map((section) => ({
+                  "@type": "Question",
+                  name: section.heading,
+                  acceptedAnswer: { "@type": "Answer", text: section.body },
+                })),
+              }
+            : undefined
+        }
+      />
       <div className="content-page__layout">
         <nav className="content-page__nav" aria-label="Help and policies">
           <ul>

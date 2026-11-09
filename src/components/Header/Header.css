@@ -196,8 +196,8 @@
   animation: header-slide-in 0.25s ease-out;
 }
 
-.header.is-stuck .header__brand img {
-  width: 120px;
+.header.is-stuck .header__brand {
+  font-size: 1.1rem;
 }
 
 @keyframes header-slide-in {
@@ -247,22 +247,11 @@
 }
 
 .header__brand {
-  font-family: var(--sf-font-heading);
-  font-weight: 700;
-  font-size: 1.5rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--sf-text-strong);
-}
-
-.header__brand img {
-  display: block;
-  width: 153px;
-  height: auto;
-}
-
-.header__brand:hover {
-  color: var(--sf-accent);
+  display: flex;
+  margin-right: 1.5rem;
+  padding: 0;
+  font-size: 1.35rem;
+  transition: font-size 0.2s ease-in-out;
 }
 
 .header__link {
@@ -319,10 +308,7 @@
   .header__brand {
     flex: 0 1 auto;
     min-width: 0;
-  }
-
-  .header__brand img {
-    max-width: 100%;
+    font-size: 1.1rem;
   }
 
   .header__mobile-actions {

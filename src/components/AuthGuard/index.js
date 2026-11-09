@@ -1,1 +1,1 @@
-export { GuestOnly, RequireAdmin, RequireAuth } from "./AuthGuard";
+export { GuestOnly, RequireAuth } from "./AuthGuard";

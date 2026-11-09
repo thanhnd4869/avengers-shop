@@ -12,6 +12,7 @@ import Icon from "@components/Icon";
 import Pagination from "@components/Pagination";
 import PlatformSection from "@components/PlatformSection";
 import ProductCard from "@components/ProductCard";
+import Seo from "@components/Seo";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getProductCategories, getProducts } from "@services/productService";
@@ -201,6 +202,13 @@ export function Component() {
 
   return (
     <Container className="shop-page">
+      <Seo
+        title="Shop"
+        description="Browse genuine game keys for PC and consoles by platform, genre and price."
+        path={PATHS.SHOP}
+        // Searches and price ranges are endless variations of this page.
+        noIndex={Boolean(q || minPrice || maxPrice)}
+      />
       <h1 className="visually-hidden">Shop</h1>
 
       <PlatformSection

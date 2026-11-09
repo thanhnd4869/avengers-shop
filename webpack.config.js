@@ -23,6 +23,7 @@ module.exports = (_, argv) => {
   const isProduction = mode === "production";
   const devServerHost = process.env.HOST || "localhost";
   const devServerPort = Number.parseInt(process.env.PORT ?? "3000", 10);
+  const apiUrl = process.env.WEBPACK_API_URL || "http://localhost:8000/api/v1";
 
   return {
     mode,
@@ -96,6 +97,8 @@ module.exports = (_, argv) => {
       new DefinePlugin({
         "process.env.WEBPACK_APP_NAME": JSON.stringify(process.env.WEBPACK_APP_NAME ?? ""),
         "process.env.WEBPACK_API_URL": JSON.stringify(process.env.WEBPACK_API_URL ?? ""),
+        "process.env.WEBPACK_SITE_URL": JSON.stringify(process.env.WEBPACK_SITE_URL ?? ""),
+        "process.env.WEBPACK_ADMIN_URL": JSON.stringify(process.env.WEBPACK_ADMIN_URL ?? ""),
       }),
       new ESLintPlugin({
         context: path.resolve(__dirname, "src"),
@@ -122,8 +125,17 @@ module.exports = (_, argv) => {
               to: path.resolve(__dirname, "build"),
               // HtmlWebpackPlugin renders the template with the hashed bundle
               // tags injected, so copying the raw file would overwrite it.
-              globOptions: { ignore: ["**/index.html"] },
+              globOptions: { ignore: ["**/index.html", "**/robots.txt"] },
               noErrorOnMissing: true,
+            },
+            {
+              // The sitemap is built by the API from the live catalogue.
+              from: path.resolve(publicDir, "robots.txt"),
+              to: path.resolve(__dirname, "build/robots.txt"),
+              transform: (content) =>
+                content
+                  .toString()
+                  .replace("%SITEMAP_URL%", `${apiUrl.replace(/\/$/, "")}/sitemap.xml`),
             },
           ],
         }),

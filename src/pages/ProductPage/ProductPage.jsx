@@ -15,11 +15,12 @@ import ProductGallery from "@components/ProductGallery";
 import QuantityInput from "@components/QuantityInput";
 import ReviewForm from "@components/ReviewForm";
 import SectionHeading from "@components/SectionHeading";
+import Seo, { absoluteUrl } from "@components/Seo";
 import ShopSidebar from "@components/ShopSidebar";
 import StarRating from "@components/StarRating";
 import useAsync from "@hooks/useAsync";
 import useCart from "@hooks/useCart";
-import { PATHS } from "@routes/paths";
+import { buildPath, PATHS } from "@routes/paths";
 import { MAX_QUANTITY } from "@services/guestCart";
 import { getProduct, getProductReviews, getRelatedProducts } from "@services/productService";
 import { formatDate, formatPriceRange } from "@utils/format";
@@ -33,6 +34,43 @@ const REVIEWS_MAX = 50;
 
 function discountPercent(price, originalPrice) {
   return originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+}
+
+/** schema.org Product, so search results can show the price, stock and rating. */
+function productStructuredData(product) {
+  const url = absoluteUrl(buildPath(PATHS.PRODUCT, { slug: product.slug }));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDescription || product.description || undefined,
+    image: [product.image, ...product.gallery].map((image) => absoluteUrl(image.url)),
+    url,
+    category: "Digital game key",
+    offers: product.variants.length
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: product.currency ?? "VND",
+          lowPrice: product.priceMin,
+          highPrice: product.priceMax,
+          offerCount: product.variants.length,
+          availability: product.isPreorder
+            ? "https://schema.org/PreOrder"
+            : product.inStock
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          url,
+        }
+      : undefined,
+    aggregateRating: product.ratingCount
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: Number(product.ratingAverage.toFixed(1)),
+          reviewCount: product.ratingCount,
+        }
+      : undefined,
+  };
 }
 
 function variantLabel(variant, showEdition) {
@@ -330,6 +368,7 @@ function ProductPlaceholder() {
 function NotFound() {
   return (
     <div className="product-page__missing rounded">
+      <Seo title="Game not found" noIndex />
       <h1 className="h3">Game not found</h1>
       <p>This game is no longer sold, or the link is mistyped.</p>
       <Button as={Link} to={PATHS.SHOP} variant="primary">
@@ -355,6 +394,14 @@ function ProductDetails({ product, onReviewsChanged }) {
 
   return (
     <>
+      <Seo
+        title={product.name}
+        description={product.shortDescription || product.description}
+        image={product.image.url}
+        type="product"
+        path={buildPath(PATHS.PRODUCT, { slug: product.slug })}
+        structuredData={productStructuredData(product)}
+      />
       <Row className="g-4 mb-5">
         <Col md={6}>
           <ProductGallery

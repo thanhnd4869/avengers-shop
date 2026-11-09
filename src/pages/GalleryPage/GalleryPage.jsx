@@ -9,7 +9,9 @@ import Icon from "@components/Icon";
 import MediaImage from "@components/MediaImage";
 import MediaSidebar from "@components/MediaSidebar";
 import SectionHeading from "@components/SectionHeading";
+import Seo from "@components/Seo";
 import useAsync from "@hooks/useAsync";
+import { PATHS } from "@routes/paths";
 import { getGalleries } from "@services/galleryService";
 import { getMedia } from "@services/mediaService";
 import { isVideoFile, videoUrl } from "@utils/media";
@@ -186,6 +188,11 @@ export function Component() {
 
   return (
     <Container className="gallery-page">
+      <Seo
+        title="Gallery"
+        description="Screenshots, artwork albums and trailers of the games we sell."
+        path={PATHS.GALLERY}
+      />
       <h1 className="visually-hidden">Gallery</h1>
       <Row className="gx-5">
         <Col lg={8} className="gallery-page__main">

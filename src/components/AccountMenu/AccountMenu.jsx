@@ -2,6 +2,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { Link, useNavigate } from "react-router";
 
 import Icon from "@components/Icon";
+import { ADMIN_URL } from "@constants/app";
 import useAuth from "@hooks/useAuth";
 import { ACCOUNT_NAV_ITEMS } from "@routes/accountNav";
 import { PATHS } from "@routes/paths";
@@ -50,8 +51,8 @@ function AccountMenu({ compact = false }) {
           </Dropdown.Item>
         ))}
 
-        {isAdmin ? (
-          <Dropdown.Item as={Link} to={PATHS.ADMIN} className="account-menu__item">
+        {isAdmin && ADMIN_URL ? (
+          <Dropdown.Item href={ADMIN_URL} className="account-menu__item">
             <Icon name="gauge" size={14} />
             Admin
           </Dropdown.Item>

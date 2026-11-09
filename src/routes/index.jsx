@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 
-import { GuestOnly, RequireAdmin, RequireAuth } from "@components/AuthGuard";
+import { GuestOnly, RequireAuth } from "@components/AuthGuard";
 import Layout from "@components/Layout";
 import PageLoader from "@components/PageLoader";
 
@@ -25,6 +25,7 @@ export const router = createBrowserRouter([
       },
       {
         path: PATHS.CART,
+        handle: { title: "Cart", noIndex: true },
         lazy: () => import("@pages/CartPage"),
       },
       {
@@ -54,34 +55,41 @@ export const router = createBrowserRouter([
         children: [
           {
             path: PATHS.LOGIN,
+            handle: { title: "Sign in", noIndex: true },
             lazy: () => import("@pages/LoginPage"),
           },
           {
             path: PATHS.REGISTER,
+            handle: { title: "Create account", noIndex: true },
             lazy: () => import("@pages/RegisterPage"),
           },
           {
             path: PATHS.FORGOT_PASSWORD,
+            handle: { title: "Forgot password", noIndex: true },
             lazy: () => import("@pages/ForgotPasswordPage"),
           },
         ],
       },
       {
         path: PATHS.RESET_PASSWORD,
+        handle: { title: "Reset password", noIndex: true },
         lazy: () => import("@pages/ResetPasswordPage"),
       },
       {
         path: PATHS.VERIFY_EMAIL,
+        handle: { title: "Verify email", noIndex: true },
         lazy: () => import("@pages/VerifyEmailPage"),
       },
       {
         path: PATHS.CONFIRM_EMAIL,
+        handle: { title: "Confirm email", noIndex: true },
         lazy: () => import("@pages/ConfirmEmailPage"),
       },
       {
         // Outside GuestOnly: it must finish even while a session is being
         // picked up, and linking happens while signed in.
         path: PATHS.OAUTH_CALLBACK,
+        handle: { title: "Signing in", noIndex: true },
         lazy: () => import("@pages/OAuthCallbackPage"),
       },
       {
@@ -92,48 +100,42 @@ export const router = createBrowserRouter([
             // one sub-page at a time; new sections such as orders or the
             // wishlist are added as further children.
             path: PATHS.ACCOUNT,
+            handle: { title: "My account", noIndex: true },
             lazy: () => import("@pages/AccountPage"),
             children: [
               { index: true, element: <Navigate to={PATHS.ACCOUNT_PROFILE} replace /> },
               {
                 path: PATHS.ACCOUNT_PROFILE,
+                handle: { title: "Profile", noIndex: true },
                 lazy: () => import("@pages/AccountPage/ProfilePage"),
               },
               {
                 path: PATHS.ACCOUNT_SECURITY,
+                handle: { title: "Security", noIndex: true },
                 lazy: () => import("@pages/AccountPage/SecurityPage"),
               },
               {
                 path: PATHS.ACCOUNT_ORDERS,
+                handle: { title: "My orders", noIndex: true },
                 lazy: () => import("@pages/AccountPage/OrdersPage"),
               },
               {
                 path: PATHS.ACCOUNT_ORDER,
+                handle: { title: "Order details", noIndex: true },
                 lazy: () => import("@pages/AccountPage/OrderDetailPage"),
               },
             ],
           },
           {
             path: PATHS.CHECKOUT,
+            handle: { title: "Checkout", noIndex: true },
             lazy: () => import("@pages/CheckoutPage"),
           },
           {
             // Where VNPay sends the shopper back after paying.
             path: PATHS.CHECKOUT_RESULT,
+            handle: { title: "Payment result", noIndex: true },
             lazy: () => import("@pages/PaymentResultPage"),
-          },
-        ],
-      },
-      {
-        element: <RequireAdmin />,
-        children: [
-          {
-            path: PATHS.ADMIN,
-            element: <Navigate to={PATHS.ADMIN_CONTACT_MESSAGES} replace />,
-          },
-          {
-            path: PATHS.ADMIN_CONTACT_MESSAGES,
-            lazy: () => import("@pages/AdminContactMessagesPage"),
           },
         ],
       },

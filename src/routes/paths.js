@@ -21,8 +21,6 @@ export const PATHS = Object.freeze({
   ACCOUNT_SECURITY: "/account/security",
   ACCOUNT_ORDERS: "/account/orders",
   ACCOUNT_ORDER: "/account/orders/:number",
-  ADMIN: "/admin",
-  ADMIN_CONTACT_MESSAGES: "/admin/contact-messages",
   CHECKOUT: "/checkout/:number",
   CHECKOUT_RESULT: "/checkout/:number/result",
   BLOG: "/blog",

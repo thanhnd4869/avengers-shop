@@ -53,11 +53,14 @@ The application opens automatically at `http://localhost:3000` by default.
 
 ## Environment Variables
 
-| Variable           | Default          | Description                                     |
-| ------------------ | ---------------- | ----------------------------------------------- |
-| `WEBPACK_APP_NAME` | `Avengers Store` | Application name exposed to the browser bundle. |
-| `HOST`             | `localhost`      | Webpack development server host.                |
-| `PORT`             | `3000`           | Webpack development server port.                |
+| Variable            | Default                        | Description                                                   |
+| ------------------- | ------------------------------ | ------------------------------------------------------------- |
+| `WEBPACK_APP_NAME`  | `Avengers Store`               | Application name exposed to the browser bundle.               |
+| `WEBPACK_API_URL`   | `http://localhost:8000/api/v1` | Backend API; `robots.txt` points at its `/sitemap.xml`.       |
+| `WEBPACK_SITE_URL`  | the page's origin              | Public shop origin for canonical links and link previews.     |
+| `WEBPACK_ADMIN_URL` | empty                          | Admin dashboard; shows an "Admin" menu link to administrators |
+| `HOST`              | `localhost`                    | Webpack development server host.                              |
+| `PORT`              | `3000`                         | Webpack development server port.                              |
 
 Only variables prefixed with `WEBPACK_` are exposed to browser code. `HOST` and `PORT` are used only by the Webpack configuration.
 
@@ -340,25 +343,34 @@ import { PATHS } from "@routes/paths";
 <Link to={PATHS.HOME}>Back to home</Link>;
 ```
 
-| Path                | Page                            | Access                  |
-| ------------------- | ------------------------------- | ----------------------- |
-| `/`                 | `HomePage`                      | Everyone                |
-| `/login`            | `LoginPage`                     | Signed-out visitors     |
-| `/register`         | `RegisterPage`                  | Signed-out visitors     |
-| `/forgot-password`  | `ForgotPasswordPage`            | Signed-out visitors     |
-| `/reset-password`   | `ResetPasswordPage`             | Everyone (emailed link) |
-| `/verify-email`     | `VerifyEmailPage`               | Everyone (emailed link) |
-| `/confirm-email`    | `ConfirmEmailPage`              | Everyone (emailed link) |
-| `/oauth/callback`   | `OAuthCallbackPage`             | Everyone (from the API) |
-| `/account`          | Redirects to `/account/profile` | Signed-in visitors      |
-| `/account/profile`  | `AccountPage/ProfilePage`       | Signed-in visitors      |
-| `/account/security` | `AccountPage/SecurityPage`      | Signed-in visitors      |
-| `/admin/*`          | `AdminContactMessagesPage`      | Administrators          |
-| `/not-found`        | `NotFoundPage`                  | Everyone                |
-| `*`                 | Redirects to `/not-found`       |                         |
+| Path                                            | Page                            | Access                  |
+| ----------------------------------------------- | ------------------------------- | ----------------------- |
+| `/`                                             | `HomePage`                      | Everyone                |
+| `/shop`                                         | `ShopPage`                      | Everyone                |
+| `/products/:slug`                               | `ProductPage`                   | Everyone                |
+| `/cart`                                         | `CartPage`                      | Everyone                |
+| `/blog`, `/blog/:slug`                          | `BlogPage`, `PostPage`          | Everyone                |
+| `/gallery`                                      | `GalleryPage`                   | Everyone                |
+| `/search`                                       | `SearchPage`                    | Everyone                |
+| `/faq`, `/refund-policy`, `/terms`, `/privacy`  | `ContentPage`                   | Everyone                |
+| `/login`                                        | `LoginPage`                     | Signed-out visitors     |
+| `/register`                                     | `RegisterPage`                  | Signed-out visitors     |
+| `/forgot-password`                              | `ForgotPasswordPage`            | Signed-out visitors     |
+| `/reset-password`                               | `ResetPasswordPage`             | Everyone (emailed link) |
+| `/verify-email`                                 | `VerifyEmailPage`               | Everyone (emailed link) |
+| `/confirm-email`                                | `ConfirmEmailPage`              | Everyone (emailed link) |
+| `/oauth/callback`                               | `OAuthCallbackPage`             | Everyone (from the API) |
+| `/account`                                      | Redirects to `/account/profile` | Signed-in visitors      |
+| `/account/profile`, `/account/security`         | `ProfilePage`, `SecurityPage`   | Signed-in visitors      |
+| `/account/orders`, `/account/orders/:number`    | `OrdersPage`, `OrderDetailPage` | Signed-in visitors      |
+| `/checkout/:number`, `/checkout/:number/result` | `CheckoutPage`, `PaymentResult` | Signed-in visitors      |
+| `/not-found`                                    | `NotFoundPage`                  | Everyone                |
+| `*`                                             | Redirects to `/not-found`       |                         |
 
-`GuestOnly`, `RequireAuth` and `RequireAdmin` in `src/components/AuthGuard`
-wrap these routes. A signed-out visitor on `/account` is sent to sign in and
+Administration lives in the separate `avengers-admin` app; set
+`WEBPACK_ADMIN_URL` to link administrators to it from the account menu.
+
+`GuestOnly` and `RequireAuth` in `src/components/AuthGuard` wrap these routes. A signed-out visitor on `/account` is sent to sign in and
 brought back afterwards.
 
 `AccountPage` is the shell of the account area: it renders the account summary
@@ -367,6 +379,23 @@ sub-page. The header's `AccountMenu` lists the same sections, both read from
 `ACCOUNT_NAV_ITEMS` in `src/routes/accountNav.js`. A new section, such as order
 history or the wishlist, is a child route under `PATHS.ACCOUNT` plus one entry
 in that list.
+
+### SEO
+
+`Seo` (`src/components/Seo`) sets each page's title, description, canonical
+URL, Open Graph and Twitter preview tags, and schema.org JSON-LD: `WebSite`
+with a search action on the home page, `Product` with its price range, stock
+and rating on game pages, `BlogPosting` on posts and `FAQPage` on the FAQ.
+Private pages (cart, checkout, account, sign-in and email links) declare
+`handle: { title, noIndex: true }` on their route instead, and `Layout` marks
+them `noindex`; searches and price-filtered shop listings are `noindex` too.
+
+`public/robots.txt` keeps crawlers out of those pages and points them at the
+API's `/sitemap.xml`, which lists the fixed pages and every published game and
+post; the build fills in the sitemap URL from `WEBPACK_API_URL`. The shop is
+rendered in the browser, so crawlers that do not run JavaScript only see the
+defaults in `public/index.html`; prerendering or server rendering would be the
+next step if that matters.
 
 Sign-in with Google and Facebook is driven by the API. `SocialSignIn` shows a
 button for each provider the API reports, asks the API for the provider's URL

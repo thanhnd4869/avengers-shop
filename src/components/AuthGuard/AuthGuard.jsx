@@ -31,22 +31,6 @@ export function RequireAuth() {
   return <Outlet />;
 }
 
-/**
- * Admin pages. Signed-in visitors without the role see the not-found page, so
- * the admin area is not advertised. The API enforces the same rule anyway.
- */
-export function RequireAdmin() {
-  const { status, isAdmin } = useAuth();
-
-  if (status === "loading") return <Loading />;
-  // Also reached when the session ends while on an admin page; the sign-in
-  // page then explains why.
-  if (status === "anonymous") return <SignInFirst />;
-  if (!isAdmin) return <Navigate to={PATHS.NOT_FOUND} replace />;
-
-  return <Outlet />;
-}
-
 /** Sign-in and sign-up pages: a signed-in visitor moves straight on. */
 export function GuestOnly() {
   const { status } = useAuth();

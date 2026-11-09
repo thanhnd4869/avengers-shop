@@ -8,6 +8,7 @@ import MediaSidebar from "@components/MediaSidebar";
 import Pagination from "@components/Pagination";
 import PostCard from "@components/PostCard";
 import SectionHeading from "@components/SectionHeading";
+import Seo from "@components/Seo";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getPostCategories, getPosts } from "@services/postService";
@@ -54,6 +55,12 @@ export function Component() {
 
   return (
     <Container className="blog-page">
+      <Seo
+        title={category ? `${categoryName} – Blog` : "Blog"}
+        description="Game news, reviews and guides from the Avengers Store team."
+        path={PATHS.BLOG}
+        noIndex={Boolean(q)}
+      />
       <Row className="gx-5">
         <Col lg={8} className="blog-page__main">
           <h1 className="visually-hidden">Blog</h1>

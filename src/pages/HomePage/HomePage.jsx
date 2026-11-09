@@ -9,8 +9,11 @@ import MediaSidebar from "@components/MediaSidebar";
 import NewsSection from "@components/NewsSection";
 import PlatformSection from "@components/PlatformSection";
 import ProductSection from "@components/ProductSection";
+import Seo, { absoluteUrl } from "@components/Seo";
 import TabbedNewsSection from "@components/TabbedNewsSection";
 import TrustBar from "@components/TrustBar";
+import { APP_NAME } from "@constants/app";
+import { PATHS } from "@routes/paths";
 
 import "./HomePage.css";
 
@@ -31,6 +34,21 @@ import "./HomePage.css";
 export function Component() {
   return (
     <>
+      <Seo
+        path={PATHS.HOME}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: APP_NAME,
+          url: absoluteUrl(PATHS.HOME),
+          // Lets search engines offer a search box that opens the shop's search.
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${absoluteUrl(PATHS.SEARCH)}?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <HeroSection />
 
       <Container className="home-page">

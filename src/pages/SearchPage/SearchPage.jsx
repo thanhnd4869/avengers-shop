@@ -8,6 +8,7 @@ import MediaSidebar from "@components/MediaSidebar";
 import PostCard from "@components/PostCard";
 import ProductCard from "@components/ProductCard";
 import SectionHeading from "@components/SectionHeading";
+import Seo from "@components/Seo";
 import useAsync from "@hooks/useAsync";
 import { PATHS } from "@routes/paths";
 import { getPosts } from "@services/postService";
@@ -64,6 +65,7 @@ export function Component() {
 
   return (
     <Container className="search-page">
+      <Seo title={q ? `Search: ${q}` : "Search"} noIndex />
       <Row className="gx-5">
         <Col lg={8} className="search-page__main">
           <h1 className="search-page__title">

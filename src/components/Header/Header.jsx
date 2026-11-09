@@ -5,10 +5,10 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, NavLink, useLocation } from "react-router";
 
 import AccountMenu from "@components/AccountMenu";
+import BrandLogo from "@components/BrandLogo";
 import HeaderSearch from "@components/HeaderSearch";
 import Icon from "@components/Icon";
 import MiniCart from "@components/MiniCart";
-import { APP_NAME } from "@constants/app";
 import useAsync from "@hooks/useAsync";
 import useAuth from "@hooks/useAuth";
 import { PATHS } from "@routes/paths";
@@ -103,7 +103,7 @@ function Header() {
         >
           <Container>
             <Navbar.Brand as={Link} to={PATHS.HOME} className="header__brand">
-              <img src="/assets/squadforce/logo.svg" alt={APP_NAME} />
+              <BrandLogo />
             </Navbar.Brand>
             {/* The top bar is hidden below lg, so the account and the cart move
               next to the menu button there instead of disappearing. On wider

@@ -14,16 +14,39 @@ import PostComments from "@components/PostComments";
 import PostShare from "@components/PostShare";
 import RichText from "@components/RichText";
 import SectionHeading from "@components/SectionHeading";
+import Seo, { absoluteUrl } from "@components/Seo";
+import { APP_NAME } from "@constants/app";
 import useAsync from "@hooks/useAsync";
-import { PATHS } from "@routes/paths";
+import { buildPath, PATHS } from "@routes/paths";
 import { getPost } from "@services/postService";
 import { formatDate } from "@utils/format";
 
 import "./PostPage.css";
 
 function PostBody({ post, commentCount }) {
+  const path = buildPath(PATHS.POST, { slug: post.slug });
+
   return (
     <article className="post-page__article">
+      <Seo
+        title={post.title}
+        description={post.excerpt}
+        image={post.image.url}
+        type="article"
+        path={path}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.excerpt,
+          image: absoluteUrl(post.image.url),
+          datePublished: post.publishedAt,
+          dateModified: post.updatedAt ?? post.publishedAt,
+          articleSection: post.category.name,
+          mainEntityOfPage: absoluteUrl(path),
+          publisher: { "@type": "Organization", name: APP_NAME },
+        }}
+      />
       <Link to={`${PATHS.BLOG}?category=${post.category.slug}`} className="post-page__category">
         {post.category.name}
       </Link>
@@ -70,6 +93,7 @@ export function Component() {
   } else if (!post) {
     content = (
       <div className="post-page__missing rounded" role="alert">
+        <Seo title="Post not found" noIndex />
         <h1 className="h3">{error?.status === 404 ? "Post not found" : "Something went wrong"}</h1>
         <p>
           {error?.status === 404

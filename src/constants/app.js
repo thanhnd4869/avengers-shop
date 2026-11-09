@@ -15,3 +15,15 @@ const readEnv = (value, fallback) => (typeof value === "string" && value ? value
 export const APP_NAME = readEnv(process.env.WEBPACK_APP_NAME, "Avengers Store");
 
 export const API_URL = readEnv(process.env.WEBPACK_API_URL, "http://localhost:8000/api/v1");
+
+/** Public origin of the shop, for canonical links and social previews. */
+export const SITE_URL = readEnv(process.env.WEBPACK_SITE_URL, window.location.origin).replace(
+  /\/$/,
+  "",
+);
+
+/** The admin dashboard (avengers-admin); its menu link is hidden when unset. */
+export const ADMIN_URL = readEnv(process.env.WEBPACK_ADMIN_URL, "");
+
+export const SITE_DESCRIPTION =
+  "Genuine game keys for PC and consoles, delivered instantly after payment.";
